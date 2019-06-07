@@ -3,6 +3,7 @@ package com.example.forgetMeNot;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,11 +36,9 @@ public class HomeFragment extends Fragment {
             necessitiesBtn = view.findViewById(R.id.necessities_button);
             shoppingListBtn = view.findViewById(R.id.shopping_list_button);
 
-
-            // TODO welcome + user's name instead of email
             // on logged in
             if(mAuth.getCurrentUser()!=null) {
-                userEmailTV.setText("Welcome " + mAuth.getCurrentUser().getEmail());
+                userEmailTV.setText("Welcome " + mAuth.getCurrentUser().getDisplayName());
             }
 
             // Move to Android Basic on button press

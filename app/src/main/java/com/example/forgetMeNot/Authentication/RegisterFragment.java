@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterFragment extends Fragment  {
 
@@ -82,9 +84,16 @@ public class RegisterFragment extends Fragment  {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
+
+                            // Set Display Name
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            UserProfileChangeRequest updateName = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name)
+                                    .build();
+                            user.updateProfile(updateName);
+
                             Toast.makeText(getActivity().getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
-
 
                             //Create user details if successful.
                             UserDetails currentUser = new UserDetails(name);
@@ -102,13 +111,13 @@ public class RegisterFragment extends Fragment  {
                         }
                     }
                 });
+
     }
 
 
     public RegisterFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

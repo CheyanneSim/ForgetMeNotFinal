@@ -1,5 +1,7 @@
 package com.example.forgetMeNot.shoppingList;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,29 +13,25 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
-import com.example.forgetMeNot.Authentication.UserDetails;
-import com.example.forgetMeNot.SharingData.GroupFragment;
 import com.example.forgetMeNot.necessities.Necessity;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 
-// TODO Firebase path wrong, should be Groups, GroupID, Necessities...
-// Edit MyNecessities & My shopping list file!
+import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
+import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
 public class MyShoppingList extends AppCompatActivity implements AddToShoppingList.DialogListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference collectionRef = db.collection("Necessities");
+    private CollectionReference collectionRef;
+    public String group;
     ArrayList<String> items = new ArrayList<>();
     ArrayList<String> selectedItems = new ArrayList<>();
     ListView shoppingList;
@@ -52,6 +50,11 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
 
         shoppingList = (ListView) findViewById(R.id.shopping_list);
         shoppingList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        // Load group from GroupFragment
+        loadGroup();
+
+        collectionRef = db.collection("Groups").document(group).collection("Necessities");
 
         // Adding items from firebase that are "Not Available" into shoppingList
         collectionRef.get()
@@ -84,6 +87,12 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
                 }
             }
         });
+    }
+
+    //Retrieve group name from GroupFragment using shared preferences
+    public void loadGroup() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        group = sharedPreferences.getString(GROUP, "");
     }
 
     public void removePurchased(View view) {

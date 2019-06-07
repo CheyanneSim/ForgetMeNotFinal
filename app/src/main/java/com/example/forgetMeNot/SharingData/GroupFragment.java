@@ -1,5 +1,7 @@
 package com.example.forgetMeNot.SharingData;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,18 +29,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO currently, User has to input group name everytime they log in.
+// shared preference can't store data based on User
 public class GroupFragment extends Fragment {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionRef = db.collection("Groups");
     private String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
     public static final String grpKey = "Groups";
-    private TextView groupName;
+    private String groupName;
+    private TextView groupTextView;
     private EditText existingGrp;
     private EditText newGrp;
     private Button joinGrp;
     private Button createGrp;
     ArrayList<String> existingGroups = new ArrayList<>();
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String GROUP = "group";
 
     public GroupFragment() {}
 
@@ -47,19 +55,11 @@ public class GroupFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Manage Groups");
 
-        groupName = getActivity().findViewById(R.id.group_name_textView);
-        db.collection(UserDetails.userDetailsKey).document(email).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            groupName.setText((String)documentSnapshot.get("Group"));
-                        }
-                    }
-                });
-
         joinGrp = getActivity().findViewById(R.id.join_grp_btn);
         createGrp = getActivity().findViewById(R.id.create_grp_btn);
+        groupTextView = getActivity().findViewById(R.id.group_name_textView);
+
+        loadGroup();
 
         // Retrieving all group names from Firestore
         collectionRef.get()
@@ -103,32 +103,47 @@ public class GroupFragment extends Fragment {
         if (existingGroups.contains(group)) {
             Toast.makeText(getActivity().getApplicationContext(), "This group name is already taken, pick another one!", Toast.LENGTH_LONG).show();
         } else {
-            groupName.setText(group);
             Map<String, Object> data = new HashMap<>();
             data.put(email, "Member");
             db.collection(grpKey).document(group).set(data);
-            Map<String, Object> userData = new HashMap<>();
-            userData.put("Group", group);
-            db.collection(UserDetails.userDetailsKey).document(email).set(userData);
+            saveGroup(group);
+            updateView();
         }
     }
 
+
     private void joinGroup(String group) {
-        if (group.equals(groupName.getText().toString())) {
+        if (group.equals(groupTextView.getText().toString())) {
             Toast.makeText(getActivity().getApplicationContext(), "You are already in the group!", Toast.LENGTH_LONG).show();
         } else if (existingGroups.contains(group)) {
-            groupName.setText(group);
             Map<String, Object> data = new HashMap<>();
             data.put(email, "Member");
             db.collection(grpKey).document(group).set(data, SetOptions.merge());
-            Map<String, Object> userData = new HashMap<>();
-            userData.put("Group", group);
-            db.collection(UserDetails.userDetailsKey).document(email).set(userData);
+            saveGroup(group);
+            updateView();
         } else {
             Toast.makeText(getActivity().getApplicationContext(), "There is no such group. Create a new group below!", Toast.LENGTH_LONG).show();
         }
     }
 
+    // Using SharedPreferences to save group
+    public void saveGroup(String group) {
+        groupName = group;
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(GROUP, group);
+        editor.apply();
+        Toast.makeText(this.getActivity(), "Group saved", Toast.LENGTH_LONG).show();
+    }
+
+    public void loadGroup() {
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        groupName = sharedPreferences.getString(GROUP, "");
+    }
+
+    public void updateView() {
+        groupTextView.setText(groupName);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
