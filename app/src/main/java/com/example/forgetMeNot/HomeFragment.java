@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.forgetMeNot.Inventory.MyInventory;
 import com.example.forgetMeNot.necessities.MyNecessities;
 import com.example.forgetMeNot.shoppingList.MyShoppingList;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,7 +21,7 @@ public class HomeFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     TextView userEmailTV;
-    Button necessitiesBtn, shoppingListBtn;
+    Button necessitiesBtn, shoppingListBtn, inventoryBtn;
 
 
         @Override
@@ -35,11 +36,35 @@ public class HomeFragment extends Fragment {
 
             necessitiesBtn = view.findViewById(R.id.necessities_button);
             shoppingListBtn = view.findViewById(R.id.shopping_list_button);
+            inventoryBtn = view.findViewById(R.id.inventory_btn);
 
             // on logged in
             if(mAuth.getCurrentUser()!=null) {
                 userEmailTV.setText("Welcome " + mAuth.getCurrentUser().getDisplayName());
             }
+
+            // Move to Inventory List on button press
+            inventoryBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(getContext(), MyInventory.class);
+
+                    startActivityForResult(intent, 0);
+                }
+            });
+
+            // Move to shopping list on button press
+            shoppingListBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(getContext(), MyShoppingList.class);
+
+                    startActivityForResult(intent, 0);
+
+                }
+            });
 
             // Move to Android Basic on button press
             necessitiesBtn.setOnClickListener(new View.OnClickListener() {
@@ -52,19 +77,6 @@ public class HomeFragment extends Fragment {
 
                 }
             });
-
-            // Move to shopping list tap on button press
-            shoppingListBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Intent intent = new Intent(getContext(), MyShoppingList.class);
-
-                    startActivityForResult(intent, 0);
-
-                }
-            });
-
 
         }
 

@@ -33,4 +33,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.firebase:firebase-database:17.0.0'
     implementation 'com.google.firebase:firebase-auth:17.0.0'
+
+    //SwipeMenuListView
+    implementation 'com.baoyz.swipemenulistview:library:1.3.0'
+    implementation 'com.android.support:support-annotations:28.0.0'
 }
