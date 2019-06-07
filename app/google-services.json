@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "19182994221",
+    "firebase_url": "https://forget-me-not-954d7.firebaseio.com",
+    "project_id": "forget-me-not-954d7",
+    "storage_bucket": "forget-me-not-954d7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19182994221:android:6c39e6f4061beadc",
+        "android_client_info": {
+          "package_name": "com.example.forgetMeNot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19182994221-p0iuba8lvvofmjpolvbd45ig036c8bgn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-dcsNJjSDSfeXSRpWJFQ3_UKPHo8cl-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19182994221-p0iuba8lvvofmjpolvbd45ig036c8bgn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
