@@ -65,7 +65,7 @@
         android:id="@+id/userEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome" />
+        android:text="@string/welcome" />
 
     <ScrollView
         android:layout_width="match_parent"

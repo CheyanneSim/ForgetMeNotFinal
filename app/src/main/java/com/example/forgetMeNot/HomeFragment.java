@@ -38,6 +38,7 @@ public class HomeFragment extends Fragment {
             shoppingListBtn = view.findViewById(R.id.shopping_list_button);
             inventoryBtn = view.findViewById(R.id.inventory_btn);
 
+            // TODO name takes too long to register!
             // on logged in
             if(mAuth.getCurrentUser()!=null) {
                 userEmailTV.setText("Welcome " + mAuth.getCurrentUser().getDisplayName());

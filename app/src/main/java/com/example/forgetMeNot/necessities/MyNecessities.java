@@ -24,12 +24,12 @@ import java.util.Map;
 import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
 import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
-
 public class MyNecessities extends AppCompatActivity implements AddToNecessities.DialogListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionRef;
     public String group;
+    public SimpleAdapter adapter;
 
     ArrayList<Map<String,String>> necessities = new ArrayList<>();
     ListView show;
@@ -58,6 +58,8 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
         retrieveData();
     }
 
+    // TODO cannot use shared preferences! after log out, next user has previous user's data!:(
+
     //Retrieve group name from GroupFragment using shared preferences
     public void loadGroup() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
@@ -83,7 +85,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
                                 }
                                 necessities.add(data);
                             }
-                            SimpleAdapter adapter = new SimpleAdapter(MyNecessities.this, necessities,
+                            adapter = new SimpleAdapter(MyNecessities.this, necessities,
                                     android.R.layout.simple_list_item_2,
                                     new String[] {"Necessity", "Availability"},
                                     new int[] {android.R.id.text1,
@@ -150,12 +152,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
                 data.put("Availability", "Not Available");
             }
             necessities.add(data);
-            SimpleAdapter adapter = new SimpleAdapter(MyNecessities.this, necessities,
-                    android.R.layout.simple_list_item_2,
-                    new String[]{"Necessity", "Availability"},
-                    new int[]{android.R.id.text1,
-                            android.R.id.text2});
-            show.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
     }
 }

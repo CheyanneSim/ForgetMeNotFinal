@@ -2,12 +2,14 @@ package com.example.forgetMeNot.Inventory;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -18,29 +20,33 @@ import com.example.forgetMeNot.necessities.Necessity;
 import com.example.forgetMeNot.necessities.NecessityFood;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
 import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
-// TODO Layout for MyInventory-- Table? grid? List?
+// TODO switch
+// TODO add OCR technology for expiry date
 
 public class MyInventory extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionRef;
     public String group;
+    public final ArrayList<Item> arrayList = new ArrayList<>();
+    private ItemListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
         final SwipeMenuListView listView = (SwipeMenuListView) findViewById(R.id.inventory_listView);
-        final ArrayList<Item> arrayList = new ArrayList<>();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -69,10 +75,10 @@ public class MyInventory extends AppCompatActivity {
                                         expiry = "N.A.";
                                     }
                                     Item item = new Item(name, expiry, false);
-                                    arrayList.add(item);
+                                    arrayList.add(0,item);
                                 }
                             }
-                            ItemListAdapter adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
+                            adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
                             listView.setAdapter(adapter);
                         }
                     }
@@ -129,12 +135,21 @@ public class MyInventory extends AppCompatActivity {
                         break;
                     case 1:
                         // delete
+                        delete(position);
                         break;
                 }
                 // false : close the menu; true : not close the menu
                 return false;
             }
         });
+    }
+
+    private void delete(int position) {
+        String item = arrayList.get(position).getName();
+        arrayList.remove(position);
+        adapter.notifyDataSetChanged();
+        collectionRef.document(item).update("Availability", false);
+        Toast.makeText(getApplicationContext(), item + " deleted from your inventory", Toast.LENGTH_LONG).show();
     }
 
     //Retrieve group name from GroupFragment using shared preferences
@@ -158,6 +173,7 @@ public class MyInventory extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // TODO button to add to inventory (non-necessity food)
     private void openDialog() {
         //AddToNecessities addToNecessities = new AddToNecessities();
         //addToNecessities.show(getSupportFragmentManager(), "add to necessities");

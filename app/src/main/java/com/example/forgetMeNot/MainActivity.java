@@ -1,5 +1,7 @@
 package com.example.forgetMeNot;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.forgetMeNot.Authentication.LoginFragment;
 import com.example.forgetMeNot.Authentication.RegisterFragment;
@@ -20,11 +24,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    TextView name, email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +38,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         // Handle drawer.
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -43,7 +48,16 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        // Display user's name and email in navigation view
+        // TODO allow addition of profile picture & changing of pic
+        // TODO Takes too long to load! and also previous user not changed!
+        View navHeader = navigationView.getHeaderView(0);
+        name = (TextView) navHeader.findViewById(R.id.name_textView);
+        email = (TextView) navHeader.findViewById(R.id.email_textView);
+        if (mAuth.getCurrentUser() != null) {
+            name.setText(mAuth.getCurrentUser().getDisplayName());
+            email.setText(mAuth.getCurrentUser().getEmail());
+        }
 
         // choose which screen u want to show first.
         displaySelectedScreen(R.id.nav_home);
@@ -135,6 +149,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
+            // TODO delete shared preferences
+            /*
+            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+            sharedPreferences.edit().clear().commit();
+            */
             fragment = new LoginFragment();
 
         } else if (id == R.id.nav_group) {
@@ -149,8 +168,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
-        @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

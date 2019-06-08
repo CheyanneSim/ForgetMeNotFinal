@@ -32,6 +32,7 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionRef;
     public String group;
+    public ArrayAdapter<String> adapter;
     ArrayList<String> items = new ArrayList<>();
     ArrayList<String> selectedItems = new ArrayList<>();
     ListView shoppingList;
@@ -69,7 +70,7 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
                                     items.add(item);
                                 }
                             }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
+                            adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
                             shoppingList.setAdapter(adapter);
                         }
                     }
@@ -128,8 +129,7 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
     @Override
     public void addItem(String item) {
         items.add(item);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
-        shoppingList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     // Set back button to finish activity
