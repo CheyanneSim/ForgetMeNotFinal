@@ -1,10 +1,6 @@
 package com.example.forgetMeNot.necessities;
 
-import android.view.CollapsibleActionView;
-
-import com.example.forgetMeNot.Authentication.UserDetails;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +27,6 @@ public class NecessityNonFood implements Necessity {
 
     @Override
     public void createEntry(CollectionReference collectionReference) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String,Object> data = new HashMap<>();
 

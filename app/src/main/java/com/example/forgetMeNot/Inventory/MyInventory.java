@@ -2,13 +2,13 @@ package com.example.forgetMeNot.Inventory;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -20,33 +20,36 @@ import com.example.forgetMeNot.necessities.Necessity;
 import com.example.forgetMeNot.necessities.NecessityFood;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
 import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
-// TODO switch
 // TODO add OCR technology for expiry date
 
-public class MyInventory extends AppCompatActivity {
+public class MyInventory extends AppCompatActivity implements AddToInventory.DialogListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference collectionRef;
+    private CollectionReference necessitiesCollectionRef;
+    private CollectionReference nonEssentialsCollectionRef;
     public String group;
     public final ArrayList<Item> arrayList = new ArrayList<>();
     private ItemListAdapter adapter;
+    Switch purchase;
+    SwipeMenuListView listView;
+
+    // To keep track of what the user has already keyed in
+    ArrayList<String> inList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
-        final SwipeMenuListView listView = (SwipeMenuListView) findViewById(R.id.inventory_listView);
+        listView = (SwipeMenuListView) findViewById(R.id.inventory_listView);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -56,10 +59,11 @@ public class MyInventory extends AppCompatActivity {
         // Load group from GroupFragment
         loadGroup();
 
-        collectionRef = db.collection("Groups").document(group).collection("Necessities");
+        necessitiesCollectionRef = db.collection("Groups").document(group).collection("Necessities");
+        nonEssentialsCollectionRef = db.collection("Groups").document(group).collection("Non-essentials");
 
-        // Adding items from firebase that are "Not Available" into shoppingList
-        collectionRef.get()
+        // Adding necessities from firebase that are "Available" into inventory
+        necessitiesCollectionRef.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -74,17 +78,36 @@ public class MyInventory extends AppCompatActivity {
                                     } else {
                                         expiry = "N.A.";
                                     }
-                                    Item item = new Item(name, expiry, false);
-                                    arrayList.add(0,item);
+                                    Item item = new Item(name, expiry);
+                                    arrayList.add(item);
+                                    inList.add(name.trim().toLowerCase());
+                                    adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
+                                    listView.setAdapter(adapter);
                                 }
                             }
-                            adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
-                            listView.setAdapter(adapter);
+
                         }
                     }
                 });
 
-
+        // Adding non-essential food items from firebase into inventory
+        nonEssentialsCollectionRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                String name = (String) doc.getData().get(Food.itemKey);
+                                String expiry = (String) doc.getData().get(Food.expiryKey);
+                                Item item = new Item(name, expiry);
+                                arrayList.add(item);
+                                inList.add(name.trim().toLowerCase());
+                                adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
+                                listView.setAdapter(adapter);
+                            }
+                        }
+                    }
+                });
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
@@ -125,7 +148,7 @@ public class MyInventory extends AppCompatActivity {
         // set creator
         listView.setMenuCreator(creator);
 
-        // TODO delete button
+        // TODO open button
         listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
@@ -142,13 +165,21 @@ public class MyInventory extends AppCompatActivity {
                 return false;
             }
         });
+
+        // TODO purchase switch
+        // Purchase switch adds to shopping list when on, removes from shopping list when off
+        // For items you want to get before they run out
+
     }
 
     private void delete(int position) {
         String item = arrayList.get(position).getName();
         arrayList.remove(position);
-        adapter.notifyDataSetChanged();
-        collectionRef.document(item).update("Availability", false);
+        inList.remove(item);
+        nonEssentialsCollectionRef.document(item).delete();
+        necessitiesCollectionRef.document(item).update("Availability", false);
+        adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
+        listView.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), item + " deleted from your inventory", Toast.LENGTH_LONG).show();
     }
 
@@ -173,10 +204,9 @@ public class MyInventory extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO button to add to inventory (non-necessity food)
     private void openDialog() {
-        //AddToNecessities addToNecessities = new AddToNecessities();
-        //addToNecessities.show(getSupportFragmentManager(), "add to necessities");
+        AddToInventory addToInventory = new AddToInventory();
+        addToInventory.show(getSupportFragmentManager(), "add to inventory");
     }
 
     // Set back button to finish activity
@@ -184,5 +214,28 @@ public class MyInventory extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    // To add non-essential food items
+    @Override
+    public void addItem(String item, String expiry) {
+        if (inList.contains(item.trim().toLowerCase())) {
+            Toast.makeText(getBaseContext(), "Item is already in your list", Toast.LENGTH_LONG).show();
+        } else if (item == null || item.trim().equals("")) {
+            Toast.makeText(getBaseContext(), "Input field is empty!", Toast.LENGTH_LONG).show();
+        } else {
+            //Adding to Firebase
+            Food food = new Food(item, expiry, true);
+            food.createEntry(nonEssentialsCollectionRef);
+
+            // To check whether item is already in necessities list
+            inList.add(item.toLowerCase());
+
+            // For List view
+            Item toAdd = new Item(item, expiry);
+            arrayList.add(toAdd);
+            adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
+            listView.setAdapter(adapter);
+        }
     }
 }

@@ -3,7 +3,6 @@ package com.example.forgetMeNot.shoppingList;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -13,9 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
-import com.example.forgetMeNot.necessities.Necessity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,6 +22,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
 import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
@@ -30,12 +31,15 @@ import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 public class MyShoppingList extends AppCompatActivity implements AddToShoppingList.DialogListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference collectionRef;
+    private CollectionReference necessitiesCollectionRef;
+    private CollectionReference extraShoppingListCollection;
     public String group;
     public ArrayAdapter<String> adapter;
     ArrayList<String> items = new ArrayList<>();
     ArrayList<String> selectedItems = new ArrayList<>();
     ListView shoppingList;
+
+    public MyShoppingList(){}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,22 +59,41 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
         // Load group from GroupFragment
         loadGroup();
 
-        collectionRef = db.collection("Groups").document(group).collection("Necessities");
+        necessitiesCollectionRef = db.collection("Groups").document(group).collection("Necessities");
+        extraShoppingListCollection = db.collection("Groups").document(group).collection("Shopping List");
 
-        // Adding items from firebase that are "Not Available" into shoppingList
-        collectionRef.get()
+        // retrieve extra shopping list that user added from Firebase
+        extraShoppingListCollection.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                boolean isAvailable = (boolean) doc.getData().get(Necessity.availabilityKey);
-                                if (!isAvailable) {
-                                    String item = (String) doc.getData().get(Necessity.itemKey);
-                                    items.add(item);
-                                }
+                                String item = doc.getString("Item");
+                                items.add(item);
                             }
                             adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
+                            shoppingList.setAdapter(adapter);
+                        }
+                    }
+                });
+
+        // Adding necessities that has ran out
+        necessitiesCollectionRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                boolean isAvailable = doc.getBoolean("Availability");
+                                if (!isAvailable) {
+                                    String item = doc.getString("Necessity");
+                                    if (!items.contains(item)) {
+                                        items.add(item);
+                                    }
+                                }
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
                             shoppingList.setAdapter(adapter);
                         }
                     }
@@ -97,10 +120,10 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
     }
 
     public void removePurchased(View view) {
-        // TODO add selected items to inventory list
         for (String item : selectedItems) {
             items.remove(item);
-            collectionRef.document(item).update("Availability", true);
+            necessitiesCollectionRef.document(item).update("Availability", true);
+            extraShoppingListCollection.document(item).delete();
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
         shoppingList.setAdapter(adapter);
@@ -128,9 +151,20 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
 
     @Override
     public void addItem(String item) {
-        items.add(item);
-        adapter.notifyDataSetChanged();
+        if (!items.contains(item)) {
+            // Add to firestore
+            Map<String, Object> data = new HashMap<>();
+            data.put("Item", item);
+            extraShoppingListCollection.document(item).set(data);
+            // add to list
+            items.add(item);
+        } else {
+            Toast.makeText(getApplicationContext(), "Item is already in your shopping list!", Toast.LENGTH_LONG).show();
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
+        shoppingList.setAdapter(adapter);
     }
+
 
     // Set back button to finish activity
     @Override

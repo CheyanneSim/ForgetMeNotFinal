@@ -149,11 +149,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
-            // TODO delete shared preferences
-            /*
             SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
             sharedPreferences.edit().clear().commit();
-            */
             fragment = new LoginFragment();
 
         } else if (id == R.id.nav_group) {

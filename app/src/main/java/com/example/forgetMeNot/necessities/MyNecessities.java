@@ -11,6 +11,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
+import com.example.forgetMeNot.shoppingList.MyShoppingList;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,7 +28,7 @@ import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 public class MyNecessities extends AppCompatActivity implements AddToNecessities.DialogListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference collectionRef;
+    private CollectionReference necessitiesCollectionRef;
     public String group;
     public SimpleAdapter adapter;
 
@@ -51,7 +52,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
         // Load group from GroupFragment
         loadGroup();
 
-        collectionRef = db.collection("Groups").document(group).collection("Necessities");
+        necessitiesCollectionRef = db.collection("Groups").document(group).collection("Necessities");
 
         // Creating list of necessities
         show = (ListView) findViewById(R.id.necessity_list);
@@ -68,7 +69,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
 
     // To retrieve data from firebase
     public void retrieveData() {
-        collectionRef.get()
+        necessitiesCollectionRef.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -84,6 +85,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
                                     data.put("Availability", "Not Available");
                                 }
                                 necessities.add(data);
+                                inList.add(item.trim().toLowerCase());
                             }
                             adapter = new SimpleAdapter(MyNecessities.this, necessities,
                                     android.R.layout.simple_list_item_2,
@@ -138,7 +140,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
             } else {
                 necessity = new NecessityNonFood(item, isAvailable);
             }
-            necessity.createEntry(collectionRef);
+            necessity.createEntry(necessitiesCollectionRef);
 
             // To check whether item is already in necessities list
             inList.add(item.toLowerCase());
@@ -152,7 +154,11 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
                 data.put("Availability", "Not Available");
             }
             necessities.add(data);
-            adapter.notifyDataSetChanged();
-        }
+            adapter = new SimpleAdapter(MyNecessities.this, necessities,
+                    android.R.layout.simple_list_item_2,
+                    new String[] {"Necessity", "Availability"},
+                    new int[] {android.R.id.text1,
+                            android.R.id.text2});
+            show.setAdapter(adapter);        }
     }
 }

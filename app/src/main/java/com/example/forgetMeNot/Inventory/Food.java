@@ -1,6 +1,7 @@
-package com.example.forgetMeNot;
+package com.example.forgetMeNot.Inventory;
 
 import com.example.forgetMeNot.Authentication.UserDetails;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -17,9 +18,9 @@ public class Food {
 
     public Food() {}
 
-    public Food(String food, boolean availability) {
+    public Food(String food, String expiry, boolean availability) {
         this.food = food;
-        this.expiry = null;
+        this.expiry = expiry;
         this.availability = availability;
     }
 
@@ -39,7 +40,7 @@ public class Food {
         this.expiry = expiry;
     }
 
-    public void createEntry() {
+    public void createEntry(CollectionReference collectionReference) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String,Object> data = new HashMap<>();
@@ -47,6 +48,6 @@ public class Food {
         data.put(itemKey, food);
         data.put(expiryKey, expiry);
         data.put(availabilityKey, availability);
-        db.collection(UserDetails.userDetailsKey).document(food).set(data);
+        collectionReference.document(food).set(data);
     }
 }
