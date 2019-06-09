@@ -5,14 +5,9 @@ public class Item {
     private String expiry;
     private boolean purchase;
 
-    public Item(String name, String expiry) {
+    public Item(String name, String expiry, boolean purchase) {
         this.name = name;
         this.expiry = expiry;
-        this.purchase = false;
-    }
-
-    public Item(String name, String expiry, boolean purchase) {
-        this(name, expiry);
         this.purchase = purchase;
     }
 

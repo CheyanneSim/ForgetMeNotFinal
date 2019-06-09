@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Switch;
@@ -49,6 +50,7 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
+
         listView = (SwipeMenuListView) findViewById(R.id.inventory_listView);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -78,7 +80,7 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
                                     } else {
                                         expiry = "N.A.";
                                     }
-                                    Item item = new Item(name, expiry);
+                                    Item item = new Item(name, expiry, false);
                                     arrayList.add(item);
                                     inList.add(name.trim().toLowerCase());
                                     adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
@@ -99,7 +101,7 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                                 String name = (String) doc.getData().get(Food.itemKey);
                                 String expiry = (String) doc.getData().get(Food.expiryKey);
-                                Item item = new Item(name, expiry);
+                                Item item = new Item(name, expiry, false);
                                 arrayList.add(item);
                                 inList.add(name.trim().toLowerCase());
                                 adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
@@ -165,11 +167,6 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
                 return false;
             }
         });
-
-        // TODO purchase switch
-        // Purchase switch adds to shopping list when on, removes from shopping list when off
-        // For items you want to get before they run out
-
     }
 
     private void delete(int position) {
@@ -232,7 +229,7 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
             inList.add(item.toLowerCase());
 
             // For List view
-            Item toAdd = new Item(item, expiry);
+            Item toAdd = new Item(item, expiry, false);
             arrayList.add(toAdd);
             adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
             listView.setAdapter(adapter);

@@ -1,22 +1,34 @@
 package com.example.forgetMeNot.Inventory;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
-
-import org.w3c.dom.Text;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
+import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
 public class ItemListAdapter extends ArrayAdapter<Item> {
     private Context mContext;
     int mResource;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference extraShoppingListCollection;
+
 
     public ItemListAdapter(Context context, int resource, ArrayList<Item> objects) {
         super(context, resource, objects);
@@ -26,9 +38,11 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String name = getItem(position).getName();
+        final String name = getItem(position).getName();
         String expiry = getItem(position).getExpiry();
         boolean purchase = getItem(position).isPurchase();
+
+        Log.d("Log back on", "" + purchase);
 
         Item item = new Item(name, expiry, purchase);
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -41,6 +55,28 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         tvItem.setText(name);
         tvExpiry.setText(expiry);
         switchPurchase.setChecked(purchase);
+
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        String group = sharedPreferences.getString(GROUP, "");
+        extraShoppingListCollection = db.collection("Groups").document(group).collection("Shopping List");
+
+        switchPurchase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // Add to the extra shopping list
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("Item", name);
+                    extraShoppingListCollection.document(name).set(data);
+                    Toast.makeText(mContext, name + " has been added to your shopping list", Toast.LENGTH_LONG).show();
+                    // TODO switch does not remain after changing page and returning!
+                    // Something to do with getting info from firebase since firebase does not store data
+                    // about purchase. Use shared preference?
+                } else {
+                    extraShoppingListCollection.document(name).delete();
+                }
+            }
+        });
 
         return convertView;
     }

@@ -25,6 +25,8 @@ import java.util.Map;
 import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
 import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
+// TODO change ListView to SwipeMenuListView to enable 'delete'
+
 public class MyNecessities extends AppCompatActivity implements AddToNecessities.DialogListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -58,8 +60,6 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
         show = (ListView) findViewById(R.id.necessity_list);
         retrieveData();
     }
-
-    // TODO cannot use shared preferences! after log out, next user has previous user's data!:(
 
     //Retrieve group name from GroupFragment using shared preferences
     public void loadGroup() {
