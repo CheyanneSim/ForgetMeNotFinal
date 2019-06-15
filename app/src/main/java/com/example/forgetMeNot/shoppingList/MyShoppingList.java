@@ -120,6 +120,7 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
     }
 
     public void removePurchased(View view) {
+        //TODO add to inventory after purchased
         for (String item : selectedItems) {
             items.remove(item);
             necessitiesCollectionRef.document(item).update("Availability", true);

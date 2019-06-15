@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.forgetMeNot.Authentication.UserDetails;
+import com.example.forgetMeNot.HomeFragment;
 import com.example.forgetMeNot.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,10 +31,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO currently, User has to input group name everytime they log in.
-// shared preference can't store data based on User
 public class GroupFragment extends Fragment {
 
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionRef = db.collection("Groups");
     private String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
@@ -108,6 +109,11 @@ public class GroupFragment extends Fragment {
             db.collection(grpKey).document(group).set(data);
             saveGroup(group);
             updateView();
+
+            // After creating group, transit to Home page.
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, new HomeFragment());
+            ft.commit();
         }
     }
 
@@ -121,6 +127,11 @@ public class GroupFragment extends Fragment {
             db.collection(grpKey).document(group).set(data, SetOptions.merge());
             saveGroup(group);
             updateView();
+
+            // After joining group, transit to Home page
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, new HomeFragment());
+            ft.commit();
         } else {
             Toast.makeText(getActivity().getApplicationContext(), "There is no such group. Create a new group below!", Toast.LENGTH_LONG).show();
         }
@@ -129,6 +140,14 @@ public class GroupFragment extends Fragment {
     // Using SharedPreferences to save group
     public void saveGroup(String group) {
         groupName = group;
+
+        // Save to Firestore
+        email = mAuth.getCurrentUser().getEmail();
+        Map<String, Object> data = new HashMap<>();
+        data.put("Group", group);
+        db.collection(UserDetails.userDetailsKey).document("Group").set(data);
+
+        // Save to sharedPreferences
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(GROUP, group);
@@ -139,6 +158,7 @@ public class GroupFragment extends Fragment {
     public void loadGroup() {
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         groupName = sharedPreferences.getString(GROUP, "");
+        updateView();
     }
 
     public void updateView() {

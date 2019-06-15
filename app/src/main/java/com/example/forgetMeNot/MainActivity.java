@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         // choose which screen u want to show first.
+        // TODO display home when log in, else, a page to ask to sign in/register
         displaySelectedScreen(R.id.nav_home);
 
 
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
             SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-            sharedPreferences.edit().clear().commit();
+            sharedPreferences.edit().clear().apply();
             fragment = new LoginFragment();
 
         } else if (id == R.id.nav_group) {

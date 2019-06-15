@@ -1,10 +1,13 @@
 package com.example.forgetMeNot.Authentication;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +20,17 @@ import android.widget.Toast;
 
 import com.example.forgetMeNot.HomeFragment;
 import com.example.forgetMeNot.R;
+import com.example.forgetMeNot.SharingData.GroupFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
+
+import java.util.ArrayList;
 
 public class LoginFragment extends Fragment  {
 
@@ -29,14 +39,17 @@ public class LoginFragment extends Fragment  {
     private ProgressBar progressBar;
     private TextView forgotPw;
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         getActivity().setTitle("Login");
-        mAuth = FirebaseAuth.getInstance();
 
         emailEditText = getActivity().findViewById(R.id.email);
         passwordEditText = getActivity().findViewById(R.id.password);
@@ -45,7 +58,8 @@ public class LoginFragment extends Fragment  {
         progressBar = getActivity().findViewById(R.id.progressBar);
         forgotPw = getActivity().findViewById(R.id.tvforgotpw);
 
-
+        sharedPreferences = getActivity().getSharedPreferences(GroupFragment.SHARED_PREFS, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,13 +81,10 @@ public class LoginFragment extends Fragment  {
 
     }
 
-
-
-
     private void loginUserAccount() {
         progressBar.setVisibility(View.VISIBLE);
 
-        String email, password;
+        final String email, password;
         email = emailEditText.getText().toString();
         password = passwordEditText.getText().toString();
 
@@ -93,6 +104,18 @@ public class LoginFragment extends Fragment  {
                         if (task.isSuccessful()) {
                             Toast.makeText(getActivity().getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
+
+                            // Save to sharedPreferences
+                            db.collection(UserDetails.userDetailsKey).document(email)
+                                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    if (documentSnapshot.exists()) {
+                                        editor.putString(GroupFragment.GROUP, documentSnapshot.getString("Group"));
+                                        editor.apply();
+                                    }
+                                }
+                            });
 
                             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                             ft.replace(R.id.content_frame, new HomeFragment());
@@ -118,6 +141,5 @@ public class LoginFragment extends Fragment  {
 
         return view;
     }
-
 
 }

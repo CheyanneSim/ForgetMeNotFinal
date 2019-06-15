@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.forgetMeNot.HomeFragment;
 import com.example.forgetMeNot.R;
+import com.example.forgetMeNot.SharingData.GroupFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -99,8 +100,9 @@ public class RegisterFragment extends Fragment  {
                             UserDetails currentUser = new UserDetails(name);
                             currentUser.createEntry();
 
+                            // After Registering, user will be brought to the page where they will join/create group
                             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.content_frame, new HomeFragment());
+                            ft.replace(R.id.content_frame, new GroupFragment());
                             ft.commit();
                         }
                         else {
