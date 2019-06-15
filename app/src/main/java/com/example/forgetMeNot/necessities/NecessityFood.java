@@ -12,8 +12,23 @@ public class NecessityFood extends Food implements Necessity {
 
     public NecessityFood() {}
 
-    public NecessityFood(String food, boolean availability) {
-        super(food, null, availability);
+    public NecessityFood(String food, String expiry, boolean availability) {
+        super(food, expiry, availability);
+    }
+
+    @Override
+    public String getName() {
+        return super.getFood();
+    }
+
+    @Override
+    public String getExpiry() {
+        return super.getExpiry();
+    }
+
+    @Override
+    public boolean getAvailability() {
+        return super.getAvailability();
     }
 
     @Override
@@ -21,7 +36,7 @@ public class NecessityFood extends Food implements Necessity {
         Map<String,Object> data = new HashMap<>();
 
         data.put(itemKey, food);
-        data.put(expiryKey, expiry);
+        data.put(Necessity.expiryKey, expiry);
         data.put(Necessity.availabilityKey, availability);
         collectionReference.document(food).set(data);
     }

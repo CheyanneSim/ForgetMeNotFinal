@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ public class GroupFragment extends Fragment {
     public static final String grpKey = "Groups";
     private String groupName;
     private TextView groupTextView;
+    private TextView noGroupTextView;
     private EditText existingGrp;
     private EditText newGrp;
     private Button joinGrp;
@@ -59,6 +61,7 @@ public class GroupFragment extends Fragment {
         joinGrp = getActivity().findViewById(R.id.join_grp_btn);
         createGrp = getActivity().findViewById(R.id.create_grp_btn);
         groupTextView = getActivity().findViewById(R.id.group_name_textView);
+        noGroupTextView = getActivity().findViewById(R.id.nogroup_tv);
 
         loadGroup();
 
@@ -159,6 +162,9 @@ public class GroupFragment extends Fragment {
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         groupName = sharedPreferences.getString(GROUP, "");
         updateView();
+        if (groupName.equals("")) {
+            noGroupTextView.setText("Please join a group before you begin!");
+        }
     }
 
     public void updateView() {

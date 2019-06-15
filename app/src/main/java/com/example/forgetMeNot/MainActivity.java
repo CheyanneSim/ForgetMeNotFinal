@@ -60,8 +60,13 @@ public class MainActivity extends AppCompatActivity
         }
 
         // choose which screen u want to show first.
-        // TODO display home when log in, else, a page to ask to sign in/register
-        displaySelectedScreen(R.id.nav_home);
+        if (mAuth.getCurrentUser() != null) {
+            displaySelectedScreen(R.id.nav_home);
+        } else {
+            FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, new LoginRegisterFragment());
+            ft.commit();
+        }
 
 
         //Firestore Setup
@@ -140,20 +145,16 @@ public class MainActivity extends AppCompatActivity
 
 
         if (id == R.id.nav_home) {
-
             fragment = new HomeFragment();
         } else if (id == R.id.nav_register) {
             fragment = new RegisterFragment();
-
         } else if (id == R.id.nav_login) {
             fragment = new LoginFragment();
-
         } else if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
             SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
             sharedPreferences.edit().clear().apply();
             fragment = new LoginFragment();
-
         } else if (id == R.id.nav_group) {
             fragment = new GroupFragment();
         }

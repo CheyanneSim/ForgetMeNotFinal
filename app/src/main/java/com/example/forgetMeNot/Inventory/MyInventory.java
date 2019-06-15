@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +17,9 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.example.forgetMeNot.Authentication.RegisterFragment;
 import com.example.forgetMeNot.R;
+import com.example.forgetMeNot.SharingData.GroupFragment;
 import com.example.forgetMeNot.necessities.Necessity;
 import com.example.forgetMeNot.necessities.NecessityFood;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -75,8 +78,8 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
                                 if (isAvailable) {
                                     String name = (String) doc.getData().get(Necessity.itemKey);
                                     String expiry;
-                                    if (doc.contains(NecessityFood.expiryKey)) {
-                                        expiry = (String) doc.getData().get(NecessityFood.expiryKey);
+                                    if (doc.contains(Necessity.expiryKey)) {
+                                        expiry = (String) doc.getData().get(Necessity.expiryKey);
                                     } else {
                                         expiry = "N.A.";
                                     }

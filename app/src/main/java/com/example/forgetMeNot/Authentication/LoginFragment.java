@@ -105,7 +105,7 @@ public class LoginFragment extends Fragment  {
                             Toast.makeText(getActivity().getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
 
-                            // Save to sharedPreferences
+                            // Save group to sharedPreferences
                             db.collection(UserDetails.userDetailsKey).document(email)
                                     .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
@@ -113,13 +113,18 @@ public class LoginFragment extends Fragment  {
                                     if (documentSnapshot.exists()) {
                                         editor.putString(GroupFragment.GROUP, documentSnapshot.getString("Group"));
                                         editor.apply();
+                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                        ft.replace(R.id.content_frame, new HomeFragment());
+                                        ft.commit();
+                                    } else {
+                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                        ft.replace(R.id.content_frame, new GroupFragment());
+                                        ft.commit();
                                     }
                                 }
                             });
 
-                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.content_frame, new HomeFragment());
-                            ft.commit();
+
                         }
                         else {
                             Toast.makeText(getActivity().getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();

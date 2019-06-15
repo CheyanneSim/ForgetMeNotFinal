@@ -17,8 +17,13 @@ public class NecessityNonFood implements Necessity {
         this.availability = availability;
     }
 
-    public String getItem() {
+    public String getName() {
         return item;
+    }
+
+    @Override
+    public String getExpiry() {
+        return "N.A.";
     }
 
     public boolean getAvailability() {

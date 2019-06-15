@@ -1,8 +1,11 @@
 package com.example.forgetMeNot;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +14,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.forgetMeNot.Inventory.MyInventory;
+import com.example.forgetMeNot.SharingData.GroupFragment;
 import com.example.forgetMeNot.necessities.MyNecessities;
 import com.example.forgetMeNot.shoppingList.MyShoppingList;
 import com.google.firebase.auth.FirebaseAuth;
 
-// TODO Make sure user log in and join group before beginning to use APP!!!
+import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
 public class HomeFragment extends Fragment {
 
@@ -42,6 +46,14 @@ public class HomeFragment extends Fragment {
             // on logged in
             if(mAuth.getCurrentUser()!=null) {
                 userEmailTV.setText("Welcome " + mAuth.getCurrentUser().getDisplayName());
+            }
+
+            // Let user join / create group before they begin!
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+            if (!sharedPreferences.contains(GroupFragment.GROUP)) {
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, new GroupFragment());
+                ft.commit();
             }
 
             // Move to Inventory List on button press
