@@ -34,15 +34,12 @@ public class HomeFragment extends Fragment {
             getActivity().setTitle("Home Screen");
             mAuth = FirebaseAuth.getInstance();
 
-
-
             userEmailTV = view.findViewById(R.id.userEmail);
 
             necessitiesBtn = view.findViewById(R.id.necessities_button);
             shoppingListBtn = view.findViewById(R.id.shopping_list_button);
             inventoryBtn = view.findViewById(R.id.inventory_btn);
 
-            // TODO name takes too long to register!
             // on logged in
             if(mAuth.getCurrentUser()!=null) {
                 userEmailTV.setText("Welcome " + mAuth.getCurrentUser().getDisplayName());

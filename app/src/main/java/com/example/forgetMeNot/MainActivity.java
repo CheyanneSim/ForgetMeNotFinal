@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,8 +50,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Display user's name and email in navigation view
-        // TODO allow addition of profile picture & changing of pic
-        // TODO Takes too long to load! and also previous user not changed!
+        // TODO Takes too long to load!
         View navHeader = navigationView.getHeaderView(0);
         name = (TextView) navHeader.findViewById(R.id.name_textView);
         email = (TextView) navHeader.findViewById(R.id.email_textView);
@@ -154,6 +154,8 @@ public class MainActivity extends AppCompatActivity
             FirebaseAuth.getInstance().signOut();
             SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
             sharedPreferences.edit().clear().apply();
+            name.setText("Welcome");
+            email.setText("Please log in and join a group to begin!");
             fragment = new LoginFragment();
         } else if (id == R.id.nav_group) {
             fragment = new GroupFragment();

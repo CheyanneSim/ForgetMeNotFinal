@@ -148,7 +148,7 @@ public class GroupFragment extends Fragment {
         email = mAuth.getCurrentUser().getEmail();
         Map<String, Object> data = new HashMap<>();
         data.put("Group", group);
-        db.collection(UserDetails.userDetailsKey).document("Group").set(data);
+        db.collection(UserDetails.userDetailsKey).document(email).set(data);
 
         // Save to sharedPreferences
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
