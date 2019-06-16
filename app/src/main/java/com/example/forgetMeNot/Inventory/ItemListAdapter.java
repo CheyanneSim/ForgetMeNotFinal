@@ -38,9 +38,14 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        String group = sharedPreferences.getString(GROUP, "");
+        extraShoppingListCollection = db.collection("Groups").document(group).collection("Shopping List");
+
         final String name = getItem(position).getName();
         String expiry = getItem(position).getExpiry();
-        boolean purchase = getItem(position).isPurchase();
+        boolean purchase = sharedPreferences.getBoolean(name, false);
 
         Log.d("Log back on", "" + purchase);
 
@@ -56,9 +61,6 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         tvExpiry.setText(expiry);
         switchPurchase.setChecked(purchase);
 
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        String group = sharedPreferences.getString(GROUP, "");
-        extraShoppingListCollection = db.collection("Groups").document(group).collection("Shopping List");
 
         switchPurchase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -69,12 +71,13 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                     data.put("Item", name);
                     extraShoppingListCollection.document(name).set(data);
                     Toast.makeText(mContext, name + " has been added to your shopping list", Toast.LENGTH_LONG).show();
-                    // TODO switch does not remain after changing page and returning!
-                    // Something to do with getting info from firebase since firebase does not store data
-                    // about purchase. Use shared preference?
                 } else {
                     extraShoppingListCollection.document(name).delete();
+                    Toast.makeText(mContext, name + " has been removed your shopping list", Toast.LENGTH_LONG).show();
+
                 }
+                editor.putBoolean(name, isChecked);
+                editor.apply();
             }
         });
 

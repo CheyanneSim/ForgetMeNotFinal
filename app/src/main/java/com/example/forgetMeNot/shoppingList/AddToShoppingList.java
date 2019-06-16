@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.example.forgetMeNot.R;
 
 public class AddToShoppingList extends AppCompatDialogFragment {
     private EditText item;
+    private CheckBox isFood;
     private DialogListener listener;
 
     @Override
@@ -35,11 +37,13 @@ public class AddToShoppingList extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String toAdd = item.getText().toString();
-                        listener.addItem(toAdd);
+                        boolean food = isFood.isChecked();
+                        listener.addItem(toAdd, food);
                     }
                 });
 
         item = view.findViewById(R.id.item_to_add_editText);
+        isFood = view.findViewById(R.id.isFood_checkbox);
         return builder.create();
     }
 
@@ -54,6 +58,6 @@ public class AddToShoppingList extends AppCompatDialogFragment {
     }
 
     public interface DialogListener {
-        void addItem(String item);
+        void addItem(String item, boolean isFood);
     }
 }

@@ -3,9 +3,11 @@ package com.example.forgetMeNot.shoppingList;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,10 +17,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.forgetMeNot.Inventory.MyInventory;
 import com.example.forgetMeNot.R;
 import com.example.forgetMeNot.SharingData.GroupFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -35,6 +42,7 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference necessitiesCollectionRef;
     private CollectionReference extraShoppingListCollection;
+    private CollectionReference nonEssentialsCollectionRef;
     public String group;
     public ArrayAdapter<String> adapter;
     ArrayList<String> items = new ArrayList<>();
@@ -62,6 +70,7 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
         loadGroup();
 
         necessitiesCollectionRef = db.collection("Groups").document(group).collection("Necessities");
+        nonEssentialsCollectionRef = db.collection("Groups").document(group).collection("Non-essentials");
         extraShoppingListCollection = db.collection("Groups").document(group).collection("Shopping List");
 
         // retrieve extra shopping list that user added from Firebase
@@ -122,11 +131,43 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
     }
 
     public void removePurchased(View view) {
-        //TODO add to inventory after purchased
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
         for (String item : selectedItems) {
             items.remove(item);
             necessitiesCollectionRef.document(item).update("Availability", true);
-            extraShoppingListCollection.document(item).delete();
+
+            // If it is non-essential food item, add it to My Inventory
+            extraShoppingListCollection.document(item).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("Item");
+                        boolean food = documentSnapshot.getBoolean("Is Food");
+                        if (food) {
+                            // Add to Firestore under Non-essentials
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("Availability", true);
+                            data.put("Expiry Date", null);
+                            data.put("Food", name);
+                            nonEssentialsCollectionRef.document(name).set(data);
+                            Log.d("My tag", "added to inventory");
+                        }
+                    }
+                }
+            }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    String name = task.getResult().getString("Item");
+                    extraShoppingListCollection.document(name).delete();
+                    Log.d("My tag", "deleted from shopping list");
+                }
+            });
+
+            // To off the purchase switch in inventory
+            editor.putBoolean(item, false);
+            editor.apply();
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
         shoppingList.setAdapter(adapter);
@@ -153,11 +194,12 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
     }
 
     @Override
-    public void addItem(String item) {
+    public void addItem(String item, boolean isFood) {
         if (!items.contains(item)) {
             // Add to firestore
             Map<String, Object> data = new HashMap<>();
             data.put("Item", item);
+            data.put("Is Food", isFood);
             extraShoppingListCollection.document(item).set(data);
             // add to list
             items.add(item);
