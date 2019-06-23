@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/Necessities_menu"
+        android:enabled="true"
+        android:title="Necessities" />
+    <item
+        android:id="@+id/NonEssentials_menu"
+        android:enabled="true"
+        android:title="Non-Essentials" />
+
+</menu>

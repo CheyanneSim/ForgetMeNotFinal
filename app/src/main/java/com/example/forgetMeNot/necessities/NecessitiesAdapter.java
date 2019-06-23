@@ -26,13 +26,14 @@ public class NecessitiesAdapter extends ArrayAdapter<Necessity> {
         final String name = getItem(position).getName();
         String expiry = getItem(position).getExpiry();
         boolean available = getItem(position).getAvailability();
-
+/*
         Necessity item;
         if (expiry.equals("N.A.")) {
             item = new NecessityNonFood(name, available);
         } else {
             item = new NecessityFood(name, expiry, available);
         }
+        */
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
 

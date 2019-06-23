@@ -18,6 +18,7 @@
             android:name=".shoppingList.MyShoppingList"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".Inventory.MyInventory"/>
+        <activity android:name=".expiry.ExpiryTracker"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

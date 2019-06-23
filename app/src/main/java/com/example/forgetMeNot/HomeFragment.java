@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.forgetMeNot.Inventory.MyInventory;
 import com.example.forgetMeNot.SharingData.GroupFragment;
+import com.example.forgetMeNot.expiry.ExpiryTracker;
 import com.example.forgetMeNot.necessities.MyNecessities;
 import com.example.forgetMeNot.shoppingList.MyShoppingList;
 import com.google.firebase.auth.FirebaseAuth;
@@ -77,9 +78,18 @@ public class HomeFragment extends Fragment {
                 }
             });
 
+            // Move to Expiry Tracker on button press
+            expiryBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ExpiryTracker.class);
+
+                    startActivityForResult(intent, 0);
+                }
+            });
 
 
-            // Move to Android Basic on button press
+            // Move to Necessities on button press
             necessitiesBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -87,7 +97,6 @@ public class HomeFragment extends Fragment {
                     Intent intent = new Intent(getContext(), MyNecessities.class);
 
                     startActivityForResult(intent, 0);
-
                 }
             });
 
