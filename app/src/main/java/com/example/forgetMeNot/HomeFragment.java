@@ -25,7 +25,7 @@ public class HomeFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     TextView userEmailTV;
-    Button necessitiesBtn, shoppingListBtn, inventoryBtn;
+    Button necessitiesBtn, shoppingListBtn, inventoryBtn, expiryBtn;
 
 
         @Override
@@ -39,6 +39,7 @@ public class HomeFragment extends Fragment {
             necessitiesBtn = view.findViewById(R.id.necessities_button);
             shoppingListBtn = view.findViewById(R.id.shopping_list_button);
             inventoryBtn = view.findViewById(R.id.inventory_btn);
+            expiryBtn = view.findViewById(R.id.expiry_btn);
 
             // on logged in
             if(mAuth.getCurrentUser()!=null) {
@@ -75,6 +76,8 @@ public class HomeFragment extends Fragment {
 
                 }
             });
+
+
 
             // Move to Android Basic on button press
             necessitiesBtn.setOnClickListener(new View.OnClickListener() {
