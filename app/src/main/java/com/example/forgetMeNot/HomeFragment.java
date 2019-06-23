@@ -13,7 +13,7 @@ import com.example.forgetMeNot.necessities.MyNecessities;
 import com.example.forgetMeNot.shoppingList.MyShoppingList;
 import com.google.firebase.auth.FirebaseAuth;
 
-// TODO Make sure user log in and join group before beginning to use APP!!!
+// TODO Make sure user log in and join group before beginning to use APP!!!!
 
 public class HomeFragment extends Fragment {
 
