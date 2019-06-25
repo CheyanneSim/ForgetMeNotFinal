@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
 
@@ -39,7 +40,14 @@ public class AddToInventory extends AppCompatDialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String toAdd = food.getText().toString();
                         String date = expiry.getText().toString();
-                        listener.addItem(toAdd, date);
+                        if (toAdd.equals("")) {
+                            Toast.makeText(getContext(), "Please enter your food item!", Toast.LENGTH_LONG).show();
+                        } else if (date.equals("")) {
+                            Toast.makeText(getContext(), "Please enter the expiry date!", Toast.LENGTH_LONG).show();
+                        } else {
+                            listener.addItem(toAdd, date);
+
+                        }
                     }
                 });
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
 
@@ -70,9 +71,15 @@ public class AddToNecessities extends AppCompatDialogFragment {
                         String toAdd = item.getText().toString();
                         boolean isFood = food.isChecked();
                         boolean isAvailable = available.isChecked();
-                        if (isFood) {
+                        if (toAdd.equals("")) {
+                            Toast.makeText(getContext(), "Please enter your item!", Toast.LENGTH_LONG).show();
+                        } else if (isFood) {
                             String expiryDate = expiry.getText().toString();
-                            listener.addItem(toAdd, expiryDate, isFood, isAvailable);
+                            if (expiryDate.equals("")) {
+                                Toast.makeText(getContext(), "Please enter the expiry date!", Toast.LENGTH_LONG).show();
+                            } else {
+                                listener.addItem(toAdd, expiryDate, isFood, isAvailable);
+                            }
                         } else {
                             listener.addItem(toAdd, null, isFood, isAvailable);
                         }
