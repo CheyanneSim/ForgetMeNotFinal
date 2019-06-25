@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "19182994221-15ns0r9npcukd93e0cau18br0gd814qg.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.forgetMeNot",
-            "certificate_hash": "a89a4641c1349f543cb796953cb79f91a5b7a8a5"
-          }
-        },
-        {
           "client_id": "19182994221-p0iuba8lvvofmjpolvbd45ig036c8bgn.apps.googleusercontent.com",
           "client_type": 3
         }
