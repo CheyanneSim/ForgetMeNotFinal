@@ -90,9 +90,9 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
                                     String expiry = (String) doc.getData().get(Necessity.expiryKey);
                                     Food necessity = new Food(item, expiry, isAvailable);
                                     foods.add(necessity);
-                                    if (expiry != null && !dates.contains(expiry)) {
+                                    if (!expiry.equals("") && !dates.contains(expiry)) {
                                         dates.add(expiry);
-                                    } else if (expiry == null && !dates.contains("No Expiry")) {
+                                    } else if (expiry.equals("") && !dates.contains("No Expiry")) {
                                         dates.add("No Expiry");
                                     }
                                 }
@@ -102,7 +102,7 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
                                 List<String> items = new ArrayList<>();
                                 for (Food food : foods) {
                                     String expiry = food.getExpiry();
-                                    if (expiry == null && date.equals("No Expiry")) {
+                                    if (expiry.equals("") && date.equals("No Expiry")) {
                                         String name = food.getFood();
                                         items.add(name);
                                     } else if (expiry != null && expiry.equals(date)) {

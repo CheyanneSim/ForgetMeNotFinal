@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:layout_weight="100">
 
-    <!--TODO alignment of text! necessities_rowlayout also-->
     <TextView
         android:id="@+id/item_textView"
         android:layout_width="100dp"

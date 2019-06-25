@@ -28,6 +28,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
     int mResource;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference extraShoppingListCollection;
+    private CollectionReference necessitiesCollection;
 
 
     public ItemListAdapter(Context context, int resource, ArrayList<Item> objects) {
@@ -45,6 +46,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
         final String name = getItem(position).getName();
         String expiry = getItem(position).getExpiry();
+        final boolean isFood = expiry.equals("N.A.");
         boolean purchase = sharedPreferences.getBoolean(name, false);
 
         Log.d("Log back on", "" + purchase);
@@ -69,6 +71,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                     // Add to the extra shopping list
                     Map<String, Object> data = new HashMap<>();
                     data.put("Item", name);
+                    data.put("Is Food", isFood);
                     extraShoppingListCollection.document(name).set(data);
                     Toast.makeText(mContext, name + " has been added to your shopping list", Toast.LENGTH_LONG).show();
                 } else {

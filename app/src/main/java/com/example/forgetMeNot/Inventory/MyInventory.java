@@ -5,23 +5,17 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
-import com.example.forgetMeNot.Authentication.RegisterFragment;
 import com.example.forgetMeNot.R;
-import com.example.forgetMeNot.SharingData.GroupFragment;
 import com.example.forgetMeNot.necessities.Necessity;
-import com.example.forgetMeNot.necessities.NecessityFood;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,7 +37,6 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
     public String group;
     public final ArrayList<Item> arrayList = new ArrayList<>();
     private ItemListAdapter adapter;
-    Switch purchase;
     SwipeMenuListView listView;
 
     // To keep track of what the user has already keyed in
@@ -119,6 +112,7 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
             @Override
             public void create(SwipeMenu menu) {
                 // create "open" item
+                /*
                 SwipeMenuItem openItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
@@ -134,6 +128,7 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
                 openItem.setTitleColor(Color.WHITE);
                 // add to menu
                 menu.addMenuItem(openItem);
+                */
 
                 // create "delete" item
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
@@ -159,9 +154,9 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case 0:
-                        // open
+                   /*     // open
                         break;
-                    case 1:
+                    case 1:*/
                         // delete
                         delete(position);
                         break;

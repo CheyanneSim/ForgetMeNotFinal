@@ -68,6 +68,18 @@
                 android:layout_gravity="center">
 
                 <Button
+                    android:id="@+id/necessities_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="#00BCD4"
+                    android:drawableRight="@drawable/groceries_icon"
+                    android:gravity="center"
+                    android:text="My Necessities"
+                    android:textColor="#FFF"
+                    android:textSize="30sp" />
+
+                <Button
                     android:id="@+id/inventory_btn"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
@@ -100,18 +112,6 @@
                     android:drawableRight="@drawable/expiry_icon"
                     android:gravity="center"
                     android:text="Expiry Tracker"
-                    android:textColor="#FFF"
-                    android:textSize="30sp" />
-
-                <Button
-                    android:id="@+id/necessities_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginBottom="15dp"
-                    android:background="#00BCD4"
-                    android:drawableRight="@drawable/groceries_icon"
-                    android:gravity="center"
-                    android:text="My Necessities"
                     android:textColor="#FFF"
                     android:textSize="30sp" />
 
