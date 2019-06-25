@@ -9,13 +9,14 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.example.forgetMeNot.R;
 
 public class AddToNecessities extends AppCompatDialogFragment {
 
-    private EditText item;
+    private EditText item, expiry;
     private CheckBox food;
     private CheckBox available;
     private DialogListener listener;
@@ -26,6 +27,34 @@ public class AddToNecessities extends AppCompatDialogFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.add_to_necessities_dialog, null);
+
+        item = view.findViewById(R.id.item_to_add_editText);
+        food = view.findViewById(R.id.food_checkBox);
+        available = view.findViewById(R.id.availability_checkbox);
+        expiry = view.findViewById(R.id.expiry_editText);
+
+        // Determines whether or not to show expiry
+        food.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (available.isChecked() && isChecked) {
+                    expiry.setVisibility(View.VISIBLE);
+                } else {
+                    expiry.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        available.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (food.isChecked() && isChecked) {
+                    expiry.setVisibility(View.VISIBLE);
+                } else {
+                    expiry.setVisibility(View.GONE);
+                }
+            }
+        });
 
         builder.setView(view)
                 .setTitle("Add To Necessities")
@@ -41,13 +70,16 @@ public class AddToNecessities extends AppCompatDialogFragment {
                         String toAdd = item.getText().toString();
                         boolean isFood = food.isChecked();
                         boolean isAvailable = available.isChecked();
-                        listener.addItem(toAdd, isFood, isAvailable);
+                        if (isFood) {
+                            String expiryDate = expiry.getText().toString();
+                            listener.addItem(toAdd, expiryDate, isFood, isAvailable);
+                        } else {
+                            listener.addItem(toAdd, null, isFood, isAvailable);
+                        }
                     }
                 });
 
-        item = view.findViewById(R.id.item_to_add_editText);
-        food = view.findViewById(R.id.food_checkBox);
-        available = view.findViewById(R.id.availability_checkbox);
+
         return builder.create();
     }
 
@@ -63,6 +95,6 @@ public class AddToNecessities extends AppCompatDialogFragment {
     }
 
     public interface DialogListener {
-        void addItem(String item, boolean isFood, boolean isAvailable);
+        void addItem(String item, String expiry, boolean isFood, boolean isAvailable);
     }
 }

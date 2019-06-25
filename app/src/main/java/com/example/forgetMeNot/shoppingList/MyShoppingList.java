@@ -156,12 +156,13 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
                         }
                     }
                 }
-            }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            }).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    String name = task.getResult().getString("Item");
-                    extraShoppingListCollection.document(name).delete();
-                    Log.d("My tag", "deleted from shopping list");
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("Item");
+                        extraShoppingListCollection.document(name).delete();
+                    }
                 }
             });
 

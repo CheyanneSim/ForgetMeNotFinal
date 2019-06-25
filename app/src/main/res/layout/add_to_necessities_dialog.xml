@@ -8,7 +8,7 @@
 
     <EditText
         android:id="@+id/item_to_add_editText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:ems="10"
@@ -16,11 +16,23 @@
         android:inputType="textCapWords"
         android:textAlignment="center" />
 
+    <EditText
+        android:id="@+id/expiry_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_to_add_editText"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="Expiry (DD/MM/YYYY)"
+        android:inputType="date"
+        android:textAlignment="center"
+        android:visibility="visible" />
+
     <CheckBox
         android:id="@+id/food_checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/item_to_add_editText"
+        android:layout_below="@id/expiry_editText"
         android:layout_centerHorizontal="true"
         android:checked="true"
         android:clickable="true"

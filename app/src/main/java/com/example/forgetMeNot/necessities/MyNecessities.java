@@ -170,7 +170,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
     }
 
     @Override
-    public void addItem(String item, boolean isFood, boolean isAvailable) {
+    public void addItem(String item, String expiry, boolean isFood, boolean isAvailable) {
         if (inList.contains(item.trim().toLowerCase())) {
             Toast.makeText(getBaseContext(), "Item is already in your list", Toast.LENGTH_LONG).show();
         } else if (item == null || item.trim().equals("")) {
@@ -179,7 +179,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
             //Adding to Firebase
             Necessity necessity;
             if (isFood) {
-                necessity = new NecessityFood(item, null,isAvailable);
+                necessity = new NecessityFood(item, expiry, isAvailable);
             } else {
                 necessity = new NecessityNonFood(item, isAvailable);
             }
