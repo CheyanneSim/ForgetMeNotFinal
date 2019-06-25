@@ -24,11 +24,14 @@ import java.util.List;
 import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
 import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
-public class NonEssentialsExpiryFragment extends Fragment {
+public class NonEssentialsExpiryFragment extends Fragment implements EditExpiryDialog.DialogListener{
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference nonEssentialCollectionRef;
     public String group;
     ExpandableListView expandableListView;
+    ArrayList<String> dates = new ArrayList<>();
+    ArrayList<Food> foods = new ArrayList<>();
+    HashMap<String, List<String>> hashMap = new HashMap<>();
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -42,69 +45,7 @@ public class NonEssentialsExpiryFragment extends Fragment {
         loadGroup();
         nonEssentialCollectionRef = db.collection("Groups").document(group).collection("Non-essentials");
 
-        nonEssentialCollectionRef.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            ArrayList<String> dates = new ArrayList<>();
-                            ArrayList<Food> foods = new ArrayList<>();
-                            HashMap<String, List<String>> hashMap = new HashMap<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                String item = (String) doc.getData().get(Food.itemKey);
-                                String expiry = (String) doc.getData().get(Food.expiryKey);
-                                Food necessity = new Food(item, expiry, true);
-                                foods.add(necessity);
-                                if (!dates.contains(expiry)) {
-                                    dates.add(expiry);
-                                }
-                            }
-                            for (String date : dates) {
-                                List<String> items = new ArrayList<>();
-                                for (Food food : foods) {
-                                    String expiry = food.getExpiry();
-                                    String name = food.getFood();
-                                    if (expiry.equals(date)) {
-                                        //String name = food.getFood();
-                                        items.add(name);
-                                    }
-                                }
-                                hashMap.put(date, items);
-                            }
-
-                            ExpiryAdapter adapter = new ExpiryAdapter(getContext(), dates, hashMap);
-                            expandableListView.setAdapter(adapter);
-                        }
-                    }
-                });
-
-           /*
-        You can add listeners for the item clicks
-         */
-        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v,
-                                        int groupPosition, long id) {
-                return false;
-            }
-        });
-
-        // Listview Group expanded listener
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-            }
-        });
-
-        // Listview Group collasped listener
-        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-            }
-        });
+        setListView();
 
         // Listview on child click listener
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -112,6 +53,11 @@ public class NonEssentialsExpiryFragment extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
+                String item = (String) parent.getExpandableListAdapter().getChild(groupPosition, childPosition);
+                EditExpiryDialog dialog = new EditExpiryDialog(item);
+                dialog.setTargetFragment(NonEssentialsExpiryFragment.this,1);
+                dialog.setStyle(EditExpiryDialog.STYLE_NORMAL, R.style.CustomDialog);
+                dialog.show(getFragmentManager(), "Edit Expiry Date");
                 return false;
             }
         });
@@ -131,5 +77,54 @@ public class NonEssentialsExpiryFragment extends Fragment {
         View view = inflater.inflate(R.layout.nonessentials_expiry_fragment, container, false);
 
         return view;
+    }
+
+    public void setListView() {
+        dates.clear();
+        foods.clear();
+        hashMap.clear();
+        nonEssentialCollectionRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                String item = (String) doc.getData().get(Food.itemKey);
+                                String expiry = (String) doc.getData().get(Food.expiryKey);
+                                Food necessity = new Food(item, expiry, true);
+                                foods.add(necessity);
+                                if (!dates.contains(expiry)) {
+                                    dates.add(expiry);
+                                }
+                            }
+                            for (String date : dates) {
+                                List<String> items = new ArrayList<>();
+                                for (Food food : foods) {
+                                    String expiry = food.getExpiry();
+                                    String name = food.getFood();
+                                    if (expiry.equals(date)) {
+                                        items.add(name);
+                                    }
+                                }
+                                hashMap.put(date, items);
+                            }
+
+                            ExpiryAdapter adapter = new ExpiryAdapter(getContext(), dates, hashMap);
+                            expandableListView.setAdapter(adapter);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void delete(String item) {
+        nonEssentialCollectionRef.document(item).delete();
+        setListView();
+    }
+
+    @Override
+    public void update(String item, String expiry) {
+        nonEssentialCollectionRef.document(item).update("Expiry Date", expiry);
+        setListView();
     }
 }

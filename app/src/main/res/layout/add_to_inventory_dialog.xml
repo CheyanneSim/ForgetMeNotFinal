@@ -31,7 +31,7 @@
         android:layout_below="@id/non_essential_item_editText"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:hint="Expiry Date"
+        android:hint="Expiry Date (DD/MM/YY)"
         android:inputType="date"
         android:textAlignment="center" />
 

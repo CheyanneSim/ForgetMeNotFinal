@@ -1,8 +1,6 @@
 package com.example.forgetMeNot.Inventory;
 
-import com.example.forgetMeNot.Authentication.UserDetails;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,8 +39,6 @@ public class Food {
     }
 
     public void createEntry(CollectionReference collectionReference) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         Map<String,Object> data = new HashMap<>();
 
         data.put(itemKey, food);

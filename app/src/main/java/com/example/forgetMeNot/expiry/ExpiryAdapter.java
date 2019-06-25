@@ -105,6 +105,7 @@ public class ExpiryAdapter extends BaseExpandableListAdapter {
         TextView child_text = (TextView) convertView.findViewById(R.id.item_tv);
 
         child_text.setText(childText);
+        child_text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.edit, 0);
         return convertView;
     }
 
