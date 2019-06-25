@@ -40,7 +40,7 @@
 
     <TextView
         android:id="@+id/userEmail"
-        android:layout_width="167dp"
+        android:layout_width="wrap_content"
         android:layout_height="41dp"
         android:text="@string/welcome"
         android:textColor="#3F51B5"

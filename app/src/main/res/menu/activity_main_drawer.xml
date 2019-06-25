@@ -6,17 +6,17 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/menu_home" />
 
 
         <item
             android:id="@+id/nav_register"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_add_circle_black_24dp"
             android:title="@string/menu_register" />
         <item
             android:id="@+id/nav_login"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_account_circle_black_24dp"
             android:title="@string/menu_login" />
         <item
             android:id="@+id/nav_group"
@@ -24,7 +24,7 @@
             android:title="Manage Group" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="Logout" />
 
     </group>
