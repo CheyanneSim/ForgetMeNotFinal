@@ -109,7 +109,6 @@ public class NonEssentialsExpiryFragment extends Fragment implements EditExpiryD
                             //Handling food without expiry
                             if (dates.contains(null)) {
                                 dates.remove(null);
-                                Collections.sort(dates);
                                 headers.add("No Expiry");
                                 List<String> items = new ArrayList<>();
                                 for (Food food : foods) {
@@ -120,6 +119,8 @@ public class NonEssentialsExpiryFragment extends Fragment implements EditExpiryD
                                 }
                                 hashMap.put("No Expiry", items);
                             }
+
+                            Collections.sort(dates);
 
                             for (Date date : dates) {
                                 List<String> items = new ArrayList<>();
