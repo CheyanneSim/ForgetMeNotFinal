@@ -130,7 +130,6 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
         group = sharedPreferences.getString(GROUP, "");
     }
 
-    //TODO require user to input expiry immediately
     public void removePurchased(View view) {
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
