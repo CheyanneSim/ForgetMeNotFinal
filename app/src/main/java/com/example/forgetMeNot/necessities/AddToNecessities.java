@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -15,12 +16,17 @@ import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class AddToNecessities extends AppCompatDialogFragment {
 
     private EditText item, expiry;
     private CheckBox food;
     private CheckBox available;
     private DialogListener listener;
+    private SimpleDateFormat formatter;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -33,6 +39,7 @@ public class AddToNecessities extends AppCompatDialogFragment {
         food = view.findViewById(R.id.food_checkBox);
         available = view.findViewById(R.id.availability_checkbox);
         expiry = view.findViewById(R.id.expiry_editText);
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         // Determines whether or not to show expiry
         food.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -73,12 +80,16 @@ public class AddToNecessities extends AppCompatDialogFragment {
                         boolean isAvailable = available.isChecked();
                         if (toAdd.equals("")) {
                             Toast.makeText(getContext(), "Please enter your item!", Toast.LENGTH_LONG).show();
-                        } else if (isFood) {
-                            String expiryDate = expiry.getText().toString();
-                            if (isAvailable && expiryDate.equals("")) {
-                                Toast.makeText(getContext(), "Please enter the expiry date!", Toast.LENGTH_LONG).show();
+                        } else if (isFood && isAvailable) {
+                            if (expiry.getText().toString().equals("")) {
+                                    Toast.makeText(getContext(), "Please enter the expiry date!", Toast.LENGTH_LONG).show();
                             } else {
-                                listener.addItem(toAdd, expiryDate, isFood, isAvailable);
+                                try {
+                                    Date expiryDate = formatter.parse(expiry.getText().toString());
+                                    listener.addItem(toAdd, expiryDate, isFood, isAvailable);
+                                } catch (ParseException e) {
+                                    Toast.makeText(getContext(), "Please input the expiry date in the DD/MM/YYYY format", Toast.LENGTH_LONG).show();
+                                }
                             }
                         } else {
                             listener.addItem(toAdd, null, isFood, isAvailable);
@@ -102,6 +113,6 @@ public class AddToNecessities extends AppCompatDialogFragment {
     }
 
     public interface DialogListener {
-        void addItem(String item, String expiry, boolean isFood, boolean isAvailable);
+        void addItem(String item, Date expiry, boolean isFood, boolean isAvailable);
     }
 }

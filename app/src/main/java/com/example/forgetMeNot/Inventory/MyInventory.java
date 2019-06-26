@@ -24,6 +24,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
 import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
@@ -70,12 +71,12 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                                 boolean isAvailable = (boolean) doc.getData().get(Necessity.availabilityKey);
                                 if (isAvailable) {
-                                    String name = (String) doc.getData().get(Necessity.itemKey);
-                                    String expiry;
+                                    String name = doc.getString(Necessity.itemKey);
+                                    Date expiry;
                                     if (doc.contains(Necessity.expiryKey)) {
-                                        expiry = (String) doc.getData().get(Necessity.expiryKey);
+                                        expiry = doc.getDate("Expiry Date");
                                     } else {
-                                        expiry = "N.A.";
+                                        expiry = null;
                                     }
                                     Item item = new Item(name, expiry, false);
                                     arrayList.add(item);
@@ -96,8 +97,8 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                String name = (String) doc.getData().get(Food.itemKey);
-                                String expiry = (String) doc.getData().get(Food.expiryKey);
+                                String name = doc.getString(Food.itemKey);
+                                Date expiry = doc.getDate(Food.expiryKey);
                                 Item item = new Item(name, expiry, false);
                                 arrayList.add(item);
                                 inList.add(name.trim().toLowerCase());
@@ -214,7 +215,7 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
 
     // To add non-essential food items
     @Override
-    public void addItem(String item, String expiry) {
+    public void addItem(String item, Date expiry) {
         if (inList.contains(item.trim().toLowerCase())) {
             Toast.makeText(getBaseContext(), "Item is already in your list", Toast.LENGTH_LONG).show();
         } else if (item == null || item.trim().equals("")) {

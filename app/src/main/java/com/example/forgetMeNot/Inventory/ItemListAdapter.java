@@ -16,7 +16,9 @@ import com.example.forgetMeNot.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
     int mResource;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference extraShoppingListCollection;
-    private CollectionReference necessitiesCollection;
+    private SimpleDateFormat formatter;
 
 
     public ItemListAdapter(Context context, int resource, ArrayList<Item> objects) {
@@ -45,9 +47,9 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         extraShoppingListCollection = db.collection("Groups").document(group).collection("Shopping List");
 
         final String name = getItem(position).getName();
-        String expiry = getItem(position).getExpiry();
-        final boolean isFood = expiry.equals("N.A.");
+        Date expiry = getItem(position).getExpiry();
         boolean purchase = sharedPreferences.getBoolean(name, false);
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         Log.d("Log back on", "" + purchase);
 
@@ -60,7 +62,11 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         Switch switchPurchase = (Switch) convertView.findViewById(R.id.purchase_switch);
 
         tvItem.setText(name);
-        tvExpiry.setText(expiry);
+        if (expiry == null) {
+            tvExpiry.setText("N.A.");
+        } else {
+            tvExpiry.setText(formatter.format(expiry));
+        }
         switchPurchase.setChecked(purchase);
 
 
@@ -71,7 +77,8 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                     // Add to the extra shopping list
                     Map<String, Object> data = new HashMap<>();
                     data.put("Item", name);
-                    data.put("Is Food", isFood);
+                    // If it's not food, it will be part of Necessities
+                    data.put("Is Food", true);
                     extraShoppingListCollection.document(name).set(data);
                     Toast.makeText(mContext, name + " has been added to your shopping list", Toast.LENGTH_LONG).show();
                 } else {

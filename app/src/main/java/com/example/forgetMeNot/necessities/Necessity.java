@@ -2,6 +2,8 @@ package com.example.forgetMeNot.necessities;
 
 import com.google.firebase.firestore.CollectionReference;
 
+import java.util.Date;
+
 
 public interface Necessity {
 
@@ -11,7 +13,7 @@ public interface Necessity {
 
 
     public String getName();
-    public String getExpiry();
+    public Date getExpiry();
     public boolean getAvailability();
 
     public void createEntry(CollectionReference collectionReference);

@@ -9,11 +9,14 @@ import android.widget.TextView;
 
 import com.example.forgetMeNot.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class NecessitiesAdapter extends ArrayAdapter<Necessity> {
     private Context mContext;
     int mResource;
+    private SimpleDateFormat formatter;
 
     public NecessitiesAdapter(Context context, int resource, ArrayList<Necessity> objects) {
         super(context, resource, objects);
@@ -24,16 +27,10 @@ public class NecessitiesAdapter extends ArrayAdapter<Necessity> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final String name = getItem(position).getName();
-        String expiry = getItem(position).getExpiry();
+        Date expiry = getItem(position).getExpiry();
         boolean available = getItem(position).getAvailability();
-/*
-        Necessity item;
-        if (expiry.equals("N.A.")) {
-            item = new NecessityNonFood(name, available);
-        } else {
-            item = new NecessityFood(name, expiry, available);
-        }
-        */
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
+
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
 
@@ -48,7 +45,11 @@ public class NecessitiesAdapter extends ArrayAdapter<Necessity> {
             availability = "Not Available";
         }
         tvItem.setText(name);
-        tvExpiry.setText(expiry);
+        if (expiry == null) {
+            tvExpiry.setText("N.A.");
+        } else {
+            tvExpiry.setText(formatter.format(expiry));
+        }
         tvAvailable.setText(availability);
 
         return convertView;

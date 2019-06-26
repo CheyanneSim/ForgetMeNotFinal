@@ -19,7 +19,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,9 +33,11 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference necessitiesCollectionRef;
+    private SimpleDateFormat formatter;
     public String group;
     ExpandableListView expandableListView;
-    ArrayList<String> dates = new ArrayList<>();
+    ArrayList<Date> dates = new ArrayList<>();
+    ArrayList<String> headers = new ArrayList<>();
     ArrayList<Food> foods = new ArrayList<>();
     HashMap<String, List<String>> hashMap = new HashMap<>();
 
@@ -40,6 +45,8 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
         super.onViewCreated(view, savedInstanceState);
 
         getActivity().setTitle("Necessities Expiry Tracker");
+
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         expandableListView = (ExpandableListView) getActivity().findViewById(R.id.necessities_expandable);
         expandableListView.setGroupIndicator(null);
@@ -76,6 +83,7 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
 
     public void setListView() {
         dates.clear();
+        headers.clear();
         foods.clear();
         hashMap.clear();
         necessitiesCollectionRef.get()
@@ -86,34 +94,48 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                                 boolean isAvailable = (boolean) doc.getData().get(Necessity.availabilityKey);
                                 if (doc.contains(Necessity.expiryKey) && isAvailable) {
-                                    String item = (String) doc.getData().get(Necessity.itemKey);
-                                    String expiry = (String) doc.getData().get(Necessity.expiryKey);
-                                    Food necessity = new Food(item, expiry, isAvailable);
-                                    foods.add(necessity);
-                                    if (!expiry.equals("") && !dates.contains(expiry)) {
-                                        dates.add(expiry);
-                                    } else if (expiry.equals("") && !dates.contains("No Expiry")) {
-                                        dates.add("No Expiry");
+                                    String item = doc.getString(Necessity.itemKey);
+                                    if (doc.contains(Necessity.expiryKey)) {
+                                        Date expiry = doc.getDate(Necessity.expiryKey);
+                                        Food necessity = new Food(item, expiry, isAvailable);
+                                        foods.add(necessity);
+                                        if (!dates.contains(expiry)) {
+                                            dates.add(expiry);
+                                        }
                                     }
                                 }
                             }
 
-                            for (String date : dates) {
+                            //Handling food without expiry
+                            if (dates.contains(null)) {
+                                dates.remove(null);
+                                Collections.sort(dates);
+                                headers.add("No Expiry");
                                 List<String> items = new ArrayList<>();
                                 for (Food food : foods) {
-                                    String expiry = food.getExpiry();
-                                    if (expiry.equals("") && date.equals("No Expiry")) {
-                                        String name = food.getFood();
-                                        items.add(name);
-                                    } else if (expiry != null && expiry.equals(date)) {
-                                        String name = food.getFood();
-                                        items.add(name);
+                                    Date expiry = food.getExpiry();
+                                    if (expiry == null) {
+                                        items.add(food.getFood());
                                     }
                                 }
-                                hashMap.put(date, items);
+                                hashMap.put("No Expiry", items);
                             }
 
-                            ExpiryAdapter adapter = new ExpiryAdapter(getContext(), dates, hashMap);
+                            for (Date date : dates) {
+                                String header = formatter.format(date);
+                                headers.add(header);
+                                List<String> items = new ArrayList<>();
+                                for (Food food : foods) {
+                                    Date expiry = food.getExpiry();
+                                    if (expiry != null && expiry.equals(date)) {
+                                        items.add(food.getFood());
+                                    }
+                                }
+                                hashMap.put(header, items);
+                            }
+
+
+                            ExpiryAdapter adapter = new ExpiryAdapter(getContext(), headers, hashMap);
                             expandableListView.setAdapter(adapter);
                         }
                     }
@@ -139,7 +161,7 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
     }
 
     @Override
-    public void update(String item, String expiry) {
+    public void update(String item, Date expiry) {
         //Update firebase
         necessitiesCollectionRef.document(item).update("Expiry Date", expiry);
 

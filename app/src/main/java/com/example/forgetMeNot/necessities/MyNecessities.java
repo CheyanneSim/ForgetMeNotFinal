@@ -22,6 +22,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
 import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
@@ -115,14 +116,14 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                String item = (String) doc.getData().get(Necessity.itemKey);
-                                String expiry = (String) doc.getData().get(Necessity.expiryKey);
-                                boolean isAvailable = (boolean) doc.getData().get(Necessity.availabilityKey);
+                                String item = doc.getString(Necessity.itemKey);
+                                boolean isAvailable = doc.getBoolean(Necessity.availabilityKey);
                                 Necessity necessity;
-                                if (expiry == null) {
-                                    necessity = new NecessityNonFood(item, isAvailable);
-                                } else {
+                                if (doc.contains(Necessity.expiryKey)) {
+                                    Date expiry = doc.getDate(Necessity.expiryKey);
                                     necessity = new NecessityFood(item, expiry, isAvailable);
+                                } else {
+                                    necessity = new NecessityNonFood(item, isAvailable);
                                 }
                                 necessities.add(necessity);
                                 inList.add(item.trim().toLowerCase());
@@ -163,7 +164,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
     }
 
     @Override
-    public void addItem(String item, String expiry, boolean isFood, boolean isAvailable) {
+    public void addItem(String item, Date expiry, boolean isFood, boolean isAvailable) {
         if (inList.contains(item.trim().toLowerCase())) {
             Toast.makeText(getBaseContext(), "Item is already in your list", Toast.LENGTH_LONG).show();
         } else if (item == null || item.trim().equals("")) {
@@ -186,7 +187,5 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
             adapter = new NecessitiesAdapter(MyNecessities.this, R.layout.necessities_rowlayout, necessities);
             listView.setAdapter(adapter);
         }
-
-
     }
 }

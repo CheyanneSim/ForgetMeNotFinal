@@ -13,16 +13,22 @@ import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class AddToInventory extends AppCompatDialogFragment {
 
     private EditText food;
     private EditText expiry;
     private DialogListener listener;
+    private SimpleDateFormat formatter;
 
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.add_to_inventory_dialog, null);
@@ -39,14 +45,17 @@ public class AddToInventory extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String toAdd = food.getText().toString();
-                        String date = expiry.getText().toString();
-                        if (toAdd.equals("")) {
-                            Toast.makeText(getContext(), "Please enter your food item!", Toast.LENGTH_LONG).show();
-                        } else if (date.equals("")) {
-                            Toast.makeText(getContext(), "Please enter the expiry date!", Toast.LENGTH_LONG).show();
-                        } else {
-                            listener.addItem(toAdd, date);
-
+                        try {
+                            if (toAdd.equals("")) {
+                                Toast.makeText(getContext(), "Please enter your food item!", Toast.LENGTH_LONG).show();
+                            } else if (expiry.getText().toString().equals("")) {
+                                Toast.makeText(getContext(), "Please enter the expiry date!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Date date = formatter.parse(expiry.getText().toString());
+                                listener.addItem(toAdd, date);
+                            }
+                        } catch (ParseException e) {
+                            Toast.makeText(getContext(), "Please enter the expiry in the DD/MM/YYYY format!", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -67,6 +76,6 @@ public class AddToInventory extends AppCompatDialogFragment {
     }
 
     public interface DialogListener {
-        void addItem(String food, String expiry);
+        void addItem(String food, Date expiry);
     }
 }

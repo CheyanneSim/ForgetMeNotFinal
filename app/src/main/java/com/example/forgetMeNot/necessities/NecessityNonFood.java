@@ -2,6 +2,7 @@ package com.example.forgetMeNot.necessities;
 
 import com.google.firebase.firestore.CollectionReference;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,8 +23,8 @@ public class NecessityNonFood implements Necessity {
     }
 
     @Override
-    public String getExpiry() {
-        return "N.A.";
+    public Date getExpiry() {
+        return null;
     }
 
     public boolean getAvailability() {

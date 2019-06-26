@@ -3,6 +3,7 @@ package com.example.forgetMeNot.necessities;
 import com.example.forgetMeNot.Inventory.Food;
 import com.google.firebase.firestore.CollectionReference;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ public class NecessityFood extends Food implements Necessity {
 
     public NecessityFood() {}
 
-    public NecessityFood(String food, String expiry, boolean availability) {
+    public NecessityFood(String food, Date expiry, boolean availability) {
         super(food, expiry, availability);
     }
 
@@ -22,7 +23,7 @@ public class NecessityFood extends Food implements Necessity {
     }
 
     @Override
-    public String getExpiry() {
+    public Date getExpiry() {
         return super.getExpiry();
     }
 

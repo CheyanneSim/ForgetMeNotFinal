@@ -13,8 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class EditExpiryDialog extends DialogFragment {
 
@@ -22,6 +27,7 @@ public class EditExpiryDialog extends DialogFragment {
     private TextView cancel, delete, update;
     private EditText expiry;
     private DialogListener listener;
+    private SimpleDateFormat formatter;
 
     @Nullable
     @Override
@@ -32,6 +38,7 @@ public class EditExpiryDialog extends DialogFragment {
         delete = (TextView) view.findViewById(R.id.delete);
         update = (TextView) view.findViewById(R.id.update);
         expiry = (EditText) view.findViewById(R.id.expiry_editText);
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,8 +57,12 @@ public class EditExpiryDialog extends DialogFragment {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String expiryDate = expiry.getText().toString();
-                listener.update(item, expiryDate);
+                try {
+                    Date expiryDate = formatter.parse(expiry.getText().toString());
+                    listener.update(item, expiryDate);
+                } catch (ParseException e) {
+                    Toast.makeText(getContext(), "Please enter expiry date in DD/MM/YYYY format!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -77,6 +88,6 @@ public class EditExpiryDialog extends DialogFragment {
 
     public interface DialogListener {
         void delete(String item);
-        void update(String item, String expiry);
+        void update(String item, Date expiry);
     }
 }

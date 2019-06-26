@@ -130,6 +130,7 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
         group = sharedPreferences.getString(GROUP, "");
     }
 
+    //TODO require user to input expiry immediately
     public void removePurchased(View view) {
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -141,13 +142,13 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
                         if (documentSnapshot.contains("Expiry Date")) {
-                            documentSnapshot.getReference().update("Expiry Date", "");
+                            documentSnapshot.getReference().update("Expiry Date", null);
                         }
                     }
                 }
             });
 
-            // If it is non-essential food item, add it to My Inventory
+            // If it is non-essential food item, add it to My Inventory, then delete from Shopping List
             extraShoppingListCollection.document(item).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override

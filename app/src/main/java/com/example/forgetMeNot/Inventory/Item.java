@@ -1,11 +1,13 @@
 package com.example.forgetMeNot.Inventory;
 
+import java.util.Date;
+
 public class Item {
     private String name;
-    private String expiry;
+    private Date expiry;
     private boolean purchase;
 
-    public Item(String name, String expiry, boolean purchase) {
+    public Item(String name, Date expiry, boolean purchase) {
         this.name = name;
         this.expiry = expiry;
         this.purchase = purchase;
@@ -19,11 +21,11 @@ public class Item {
         this.name = name;
     }
 
-    public String getExpiry() {
+    public Date getExpiry() {
         return expiry;
     }
 
-    public void setExpiry(String expiry) {
+    public void setExpiry(Date expiry) {
         this.expiry = expiry;
     }
 

@@ -2,6 +2,7 @@ package com.example.forgetMeNot.Inventory;
 
 import com.google.firebase.firestore.CollectionReference;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,12 +12,12 @@ public class Food {
     public static final String expiryKey = "Expiry Date";
     public static final String availabilityKey = "Availability";
     protected String food;
-    protected String expiry;
+    protected Date expiry;
     protected boolean availability;
 
     public Food() {}
 
-    public Food(String food, String expiry, boolean availability) {
+    public Food(String food, Date expiry, boolean availability) {
         this.food = food;
         this.expiry = expiry;
         this.availability = availability;
@@ -26,7 +27,7 @@ public class Food {
         return food;
     }
 
-    public String getExpiry() {
+    public Date getExpiry() {
         return expiry;
     }
 
@@ -34,7 +35,7 @@ public class Food {
         return availability;
     }
 
-    public void setExpiry(String expiry) {
+    public void setExpiry(Date expiry) {
         this.expiry = expiry;
     }
 
