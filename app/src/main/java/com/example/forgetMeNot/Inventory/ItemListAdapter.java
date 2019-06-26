@@ -46,7 +46,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
         final String name = getItem(position).getName();
         String expiry = getItem(position).getExpiry();
-        final boolean isFood = expiry.equals("N.A.");
+        final boolean isFood = expiry.equals("");
         boolean purchase = sharedPreferences.getBoolean(name, false);
 
         Log.d("Log back on", "" + purchase);

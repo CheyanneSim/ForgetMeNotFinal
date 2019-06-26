@@ -159,7 +159,7 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
                             // Add to Firestore under Non-essentials
                             Map<String, Object> data = new HashMap<>();
                             data.put("Availability", true);
-                            data.put("Expiry Date", null);
+                            data.put("Expiry Date", "");
                             data.put("Food", name);
                             nonEssentialsCollectionRef.document(name).set(data);
                             Log.d("My tag", "added to inventory");
