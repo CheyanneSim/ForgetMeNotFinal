@@ -136,7 +136,16 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
         for (String item : selectedItems) {
             items.remove(item);
             necessitiesCollectionRef.document(item).update("Availability", true);
-            necessitiesCollectionRef.document(item).update("Expiry Date", "");
+            necessitiesCollectionRef.document(item).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        if (documentSnapshot.contains("Expiry Date")) {
+                            documentSnapshot.getReference().update("Expiry Date", "");
+                        }
+                    }
+                }
+            });
 
             // If it is non-essential food item, add it to My Inventory
             extraShoppingListCollection.document(item).get()

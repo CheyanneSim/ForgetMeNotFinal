@@ -132,7 +132,7 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
     public void delete(String item) {
         // Update firebase
         necessitiesCollectionRef.document(item).update("Availability", false);
-        necessitiesCollectionRef.document(item).update("Expiry Date", null);
+        necessitiesCollectionRef.document(item).update("Expiry Date", "");
 
         // Update listview
         setListView();

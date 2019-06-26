@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -152,15 +153,15 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
         listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                switch (index) {
-                    case 0:
+                //switch (index) {
+                    //case 0:
                    /*     // open
                         break;
                     case 1:*/
                         // delete
                         delete(position);
-                        break;
-                }
+                        //break;
+                //}
                 // false : close the menu; true : not close the menu
                 return false;
             }
@@ -170,7 +171,7 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
     private void delete(int position) {
         String item = arrayList.get(position).getName();
         arrayList.remove(position);
-        inList.remove(item);
+        inList.remove(item.toLowerCase());
         nonEssentialsCollectionRef.document(item).delete();
         necessitiesCollectionRef.document(item).update("Availability", false);
         adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
