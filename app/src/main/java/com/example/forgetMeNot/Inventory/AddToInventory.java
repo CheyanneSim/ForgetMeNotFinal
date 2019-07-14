@@ -33,11 +33,46 @@ public class AddToInventory extends AppCompatDialogFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        scannerBtn = view.findViewById(R.id.scanButton);
     }
 
     @Override
     public  Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.add_to_inventory_dialog, null);
+
+        builder.setView(view)
+                .setTitle("Add To Inventory")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("Add Food", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String toAdd = food.getText().toString();
+                        try {
+                            if (toAdd.equals("")) {
+                                Toast.makeText(getContext(), "Please enter your food item!", Toast.LENGTH_LONG).show();
+                            } else if (expiry.getText().toString().equals("")) {
+                                Toast.makeText(getContext(), "Please enter the expiry date!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Date date = formatter.parse(expiry.getText().toString());
+                                listener.addItem(toAdd, date);
+                            }
+                        } catch (ParseException e) {
+                            Toast.makeText(getContext(), "Please enter the expiry in the DD/MM/YYYY format!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+        scannerBtn = view.findViewById(R.id.scanButton);
+        food = view.findViewById(R.id.non_essential_item_editText);
+        expiry = view.findViewById(R.id.expiry_editText);
 
         scannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,43 +84,7 @@ public class AddToInventory extends AppCompatDialogFragment {
             }
         });
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View view = inflater.inflate(R.layout.add_to_inventory_dialog, null);
-
-            builder.setView(view)
-                    .setTitle("Add To Inventory")
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-                    .setPositiveButton("Add Food", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String toAdd = food.getText().toString();
-                            try {
-                                if (toAdd.equals("")) {
-                                    Toast.makeText(getContext(), "Please enter your food item!", Toast.LENGTH_LONG).show();
-                                } else if (expiry.getText().toString().equals("")) {
-                                    Toast.makeText(getContext(), "Please enter the expiry date!", Toast.LENGTH_LONG).show();
-                                } else {
-                                    Date date = formatter.parse(expiry.getText().toString());
-                                    listener.addItem(toAdd, date);
-                                }
-                            } catch (ParseException e) {
-                                Toast.makeText(getContext(), "Please enter the expiry in the DD/MM/YYYY format!", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-
-
-            food = view.findViewById(R.id.non_essential_item_editText);
-            expiry = view.findViewById(R.id.expiry_editText);
-            return builder.create();
+        return builder.create();
 
     }
 
