@@ -42,6 +42,7 @@
         android:text="Have a group? Key in your group name below!"
         android:textAlignment="center"
         android:textColor="#000000"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <EditText
@@ -51,7 +52,15 @@
         android:ems="10"
         android:hint="Group Name"
         android:inputType="textPersonName"
-        android:textAlignment="center" />
+        android:textAlignment="viewStart" />
+
+    <EditText
+        android:id="@+id/existingpw_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/join_grp_btn"
@@ -66,6 +75,7 @@
         android:text="No Group? Choose a group name!"
         android:textAlignment="center"
         android:textColor="#000000"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <EditText
@@ -75,7 +85,16 @@
         android:ems="10"
         android:hint="Group Name"
         android:inputType="textPersonName"
-        android:textAlignment="center" />
+        android:textAlignment="viewStart" />
+
+    <EditText
+        android:id="@+id/newpw_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Create Password"
+        android:inputType="textPassword"
+        android:textAlignment="viewStart" />
 
     <Button
         android:id="@+id/create_grp_btn"

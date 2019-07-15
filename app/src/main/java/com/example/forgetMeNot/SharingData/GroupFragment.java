@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +43,8 @@ public class GroupFragment extends Fragment {
     private TextView noGroupTextView;
     private EditText existingGrp;
     private EditText newGrp;
+    private EditText existingpw;
+    private EditText newpw;
     private Button joinGrp;
     private Button createGrp;
     ArrayList<String> existingGroups = new ArrayList<>();
@@ -84,8 +85,9 @@ public class GroupFragment extends Fragment {
             public void onClick(View v) {
                 String group;
                 existingGrp = getActivity().findViewById(R.id.existing_group_editText);
+                existingpw = getActivity().findViewById(R.id.existingpw_editText);
                 group = existingGrp.getText().toString();
-                joinGroup(group);
+                checkValidity(group, existingpw.getText().toString());
                 existingGrp.setText("");
             }
         });
@@ -95,20 +97,22 @@ public class GroupFragment extends Fragment {
             public void onClick(View v) {
                 String group;
                 newGrp = getActivity().findViewById(R.id.new_group_edit_text);
+                newpw = getActivity().findViewById(R.id.newpw_editText);
                 group = newGrp.getText().toString();
-                createGroup(group);
+                createGroup(group, newpw.getText().toString());
                 newGrp.setText("");
             }
         });
 
     }
 
-    private void createGroup(String group) {
+    private void createGroup(String group, String password) {
         if (existingGroups.contains(group)) {
             Toast.makeText(getActivity().getApplicationContext(), "This group name is already taken, pick another one!", Toast.LENGTH_LONG).show();
         } else {
             Map<String, Object> data = new HashMap<>();
             data.put(email, "Member");
+            data.put("Password", password);
             db.collection(grpKey).document(group).set(data);
             saveGroup(group);
             updateView();
@@ -120,24 +124,40 @@ public class GroupFragment extends Fragment {
         }
     }
 
-
-    private void joinGroup(String group) {
+    private void checkValidity(final String group, final String password) {
         if (group.equals(groupTextView.getText().toString())) {
             Toast.makeText(getActivity().getApplicationContext(), "You are already in the group!", Toast.LENGTH_LONG).show();
         } else if (existingGroups.contains(group)) {
-            Map<String, Object> data = new HashMap<>();
-            data.put(email, "Member");
-            db.collection(grpKey).document(group).set(data, SetOptions.merge());
-            saveGroup(group);
-            updateView();
-
-            // After joining group, transit to Home page
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, new HomeFragment());
-            ft.commit();
+            db.collection(grpKey).document(group).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        String correctpw = documentSnapshot.getString("Password");
+                        if (correctpw.equals(password)) {
+                            joinGroup(group);
+                        } else {
+                            Toast.makeText(getContext(), "Incorrect Password", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            });
         } else {
             Toast.makeText(getActivity().getApplicationContext(), "There is no such group. Create a new group below!", Toast.LENGTH_LONG).show();
         }
+    }
+
+
+    private void joinGroup(String group) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(email, "Member");
+        db.collection(grpKey).document(group).set(data, SetOptions.merge());
+        saveGroup(group);
+        updateView();
+
+        // After joining group, transit to Home page
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_frame, new HomeFragment());
+        ft.commit();
     }
 
     // Using SharedPreferences to save group
