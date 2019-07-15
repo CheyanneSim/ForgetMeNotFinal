@@ -39,7 +39,8 @@ public class AddToNecessities extends AppCompatDialogFragment {
         food = view.findViewById(R.id.food_checkBox);
         available = view.findViewById(R.id.availability_checkbox);
         expiry = view.findViewById(R.id.expiry_editText);
-        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        formatter = new SimpleDateFormat("dd/MM/yy");
+        formatter.setLenient(false);
 
         // Determines whether or not to show expiry
         food.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -88,7 +89,7 @@ public class AddToNecessities extends AppCompatDialogFragment {
                                     Date expiryDate = formatter.parse(expiry.getText().toString());
                                     listener.addItem(toAdd, expiryDate, isFood, isAvailable);
                                 } catch (ParseException e) {
-                                    Toast.makeText(getContext(), "Please input the expiry date in the DD/MM/YYYY format", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getContext(), "Please check your date input!", Toast.LENGTH_LONG).show();
                                 }
                             }
                         } else {

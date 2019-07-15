@@ -51,7 +51,7 @@ public class NonEssentialsExpiryFragment extends Fragment implements EditExpiryD
 
         getActivity().setTitle("Non-essentials Expiry Tracker");
 
-        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        formatter = new SimpleDateFormat("dd/MM/yy");
 
         expandableListView = (ExpandableListView) getActivity().findViewById(R.id.nonessentials_expandable);
         expandableListView.setGroupIndicator(null);

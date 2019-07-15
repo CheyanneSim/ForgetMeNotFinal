@@ -49,7 +49,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         final String name = getItem(position).getName();
         Date expiry = getItem(position).getExpiry();
         boolean purchase = sharedPreferences.getBoolean(name, false);
-        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        formatter = new SimpleDateFormat("dd/MM/yy");
 
         Log.d("Log back on", "" + purchase);
 

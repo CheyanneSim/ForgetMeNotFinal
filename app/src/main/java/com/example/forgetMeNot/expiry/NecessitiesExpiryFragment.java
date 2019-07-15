@@ -55,7 +55,7 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
 
         getActivity().setTitle("Necessities Expiry Tracker");
 
-        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        formatter = new SimpleDateFormat("dd/MM/yy");
 
         expandableListView = (ExpandableListView) getActivity().findViewById(R.id.necessities_expandable);
         expandableListView.setGroupIndicator(null);

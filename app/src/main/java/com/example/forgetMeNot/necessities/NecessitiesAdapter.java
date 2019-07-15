@@ -29,7 +29,7 @@ public class NecessitiesAdapter extends ArrayAdapter<Necessity> {
         final String name = getItem(position).getName();
         Date expiry = getItem(position).getExpiry();
         boolean available = getItem(position).getAvailability();
-        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        formatter = new SimpleDateFormat("dd/MM/yy");
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);

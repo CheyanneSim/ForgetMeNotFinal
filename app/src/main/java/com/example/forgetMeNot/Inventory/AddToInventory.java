@@ -39,7 +39,8 @@ public class AddToInventory extends AppCompatDialogFragment {
     public  Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        formatter = new SimpleDateFormat("dd/MM/yy");
+        formatter.setLenient(false);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.add_to_inventory_dialog, null);
@@ -66,7 +67,7 @@ public class AddToInventory extends AppCompatDialogFragment {
                                 listener.addItem(toAdd, date);
                             }
                         } catch (ParseException e) {
-                            Toast.makeText(getContext(), "Please enter the expiry in the DD/MM/YYYY format!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Please check your date input!", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

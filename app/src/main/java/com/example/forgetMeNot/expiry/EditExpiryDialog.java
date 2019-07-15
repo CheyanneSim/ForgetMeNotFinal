@@ -38,7 +38,8 @@ public class EditExpiryDialog extends DialogFragment {
         delete = (TextView) view.findViewById(R.id.delete);
         update = (TextView) view.findViewById(R.id.update);
         expiry = (EditText) view.findViewById(R.id.expiry_editText);
-        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        formatter = new SimpleDateFormat("dd/MM/yy");
+        formatter.setLenient(false);
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +62,7 @@ public class EditExpiryDialog extends DialogFragment {
                     Date expiryDate = formatter.parse(expiry.getText().toString());
                     listener.update(item, expiryDate);
                 } catch (ParseException e) {
-                    Toast.makeText(getContext(), "Please enter expiry date in DD/MM/YYYY format!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Please check your date input!", Toast.LENGTH_LONG).show();
                 }
             }
         });
