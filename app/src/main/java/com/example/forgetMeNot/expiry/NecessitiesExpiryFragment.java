@@ -1,5 +1,6 @@
 package com.example.forgetMeNot.expiry;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -212,7 +213,7 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
     public void delete(String item) {
         // Update firebase
         necessitiesCollectionRef.document(item).update("Availability", false);
-        necessitiesCollectionRef.document(item).update("Expiry Date", "");
+        necessitiesCollectionRef.document(item).update("Expiry Date", null);
 
         // Update listview
         setListView();

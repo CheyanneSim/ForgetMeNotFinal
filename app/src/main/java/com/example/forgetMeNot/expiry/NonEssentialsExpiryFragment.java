@@ -1,9 +1,11 @@
 package com.example.forgetMeNot.expiry;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -192,10 +194,9 @@ public class NonEssentialsExpiryFragment extends Fragment implements EditExpiryD
                                 }
                                 hashMap.put(header, items);
                             }
-
-                            ExpiryAdapter adapter = new ExpiryAdapter(getContext(), headers, hashMap);
-                            expandableListView.setAdapter(adapter);
                         }
+                        ExpiryAdapter adapter = new ExpiryAdapter(getContext(), headers, hashMap);
+                        expandableListView.setAdapter(adapter);
                     }
                 });
     }

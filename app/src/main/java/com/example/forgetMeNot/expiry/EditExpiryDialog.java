@@ -52,6 +52,12 @@ public class EditExpiryDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 listener.delete(item);
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    Thread.interrupted();
+                }
+                dismiss();
             }
         });
 
@@ -61,9 +67,13 @@ public class EditExpiryDialog extends DialogFragment {
                 try {
                     Date expiryDate = formatter.parse(expiry.getText().toString());
                     listener.update(item, expiryDate);
+                    Thread.sleep(1000);
                 } catch (ParseException e) {
                     Toast.makeText(getContext(), "Please check your date input!", Toast.LENGTH_LONG).show();
+                } catch (InterruptedException e) {
+                    Thread.interrupted();
                 }
+                dismiss();
             }
         });
 
