@@ -5,10 +5,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.forgetMeNot.Inventory.Food;
 import com.example.forgetMeNot.R;
@@ -34,11 +40,14 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference necessitiesCollectionRef;
     private SimpleDateFormat formatter;
+    private AutoCompleteTextView search;
+    private ImageButton cancel;
     public String group;
     ExpandableListView expandableListView;
     ArrayList<Date> dates = new ArrayList<>();
     ArrayList<String> headers = new ArrayList<>();
     ArrayList<Food> foods = new ArrayList<>();
+    ArrayList<String> searches = new ArrayList<>();
     HashMap<String, List<String>> hashMap = new HashMap<>();
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -71,6 +80,26 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
                 return false;
             }
         });
+
+        search = view.findViewById(R.id.necessities_search);
+        cancel = view.findViewById(R.id.cancel_btn);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_list_item_1, searches);
+        search.setAdapter(adapter);
+        search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                searchFood(search.getText().toString());
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search.setText("");
+                setListView();
+            }
+        });
     }
 
     // Retrieve group name from GroupFragment using shared preferences
@@ -80,6 +109,33 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
     }
 
     public NecessitiesExpiryFragment() {}
+
+    public void searchFood(String search) {
+        headers.clear();
+        hashMap.clear();
+        Date expiry;
+        for (Food food : foods) {
+            if (food.getFood().equals(search)) {
+                expiry = food.getExpiry();
+                if (expiry == null) {
+                    headers.add("No Expiry");
+                } else {
+                    headers.add(formatter.format(expiry));
+                }
+                break;
+            }
+        }
+        if (headers.isEmpty()) {
+            Toast.makeText(getContext(), "Search not found", Toast.LENGTH_LONG).show();
+        } else {
+            List<String> items = new ArrayList<>();
+            items.add(search);
+            hashMap.put(headers.get(0), items);
+        }
+
+        ExpiryAdapter adapter = new ExpiryAdapter(getContext(), headers, hashMap);
+        expandableListView.setAdapter(adapter);
+    }
 
     public void setListView() {
         dates.clear();
@@ -102,6 +158,7 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
                                         if (!dates.contains(expiry)) {
                                             dates.add(expiry);
                                         }
+                                        searches.add(item);
                                     }
                                 }
                             }
