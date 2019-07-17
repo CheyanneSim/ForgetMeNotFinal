@@ -9,26 +9,27 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.forgetMeNot.OCR.OCR;
 import com.example.forgetMeNot.R;
-import com.example.forgetMeNot.barcodeScanner.mainBarcodeAct;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.app.Activity.RESULT_OK;
+
 public class AddToInventory extends AppCompatDialogFragment {
 
     private EditText food;
     private EditText expiry;
+    private ImageButton scanFood;
+    private ImageButton scanExpiry;
     private DialogListener listener;
     private SimpleDateFormat formatter;
-    Button scannerBtn;
-    //boolean clicked = false;
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -71,22 +72,42 @@ public class AddToInventory extends AppCompatDialogFragment {
                         }
                     }
                 });
-        scannerBtn = view.findViewById(R.id.scanButton);
         food = view.findViewById(R.id.non_essential_item_editText);
         expiry = view.findViewById(R.id.expiry_editText);
+        scanFood = view.findViewById(R.id.scan_food);
+        scanExpiry = view.findViewById(R.id.scan_expiry);
 
-        scannerBtn.setOnClickListener(new View.OnClickListener() {
+        scanFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivityForResult(new Intent(getContext(), OCR.class), 0);
+            }
+        });
 
-                Intent intent = new Intent(getContext(), mainBarcodeAct.class);
-
-                startActivityForResult(intent, 0);
+        scanExpiry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getContext(), OCR.class), 1);
             }
         });
 
         return builder.create();
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            String text = data.getStringExtra("Recognised Text");
+            switch (requestCode) {
+                case 0:
+                    food.setText(text);
+                    break;
+                case 1:
+                    expiry.setText(text);
+                    break;
+            }
+        }
     }
 
     @Override
