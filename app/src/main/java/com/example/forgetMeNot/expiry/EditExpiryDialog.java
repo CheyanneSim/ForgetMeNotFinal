@@ -67,7 +67,7 @@ public class EditExpiryDialog extends DialogFragment {
                 try {
                     Date expiryDate = formatter.parse(expiry.getText().toString());
                     listener.update(item, expiryDate);
-                    Thread.sleep(1000);
+                    Thread.sleep(1500);
                 } catch (ParseException e) {
                     Toast.makeText(getContext(), "Please check your date input!", Toast.LENGTH_LONG).show();
                 } catch (InterruptedException e) {

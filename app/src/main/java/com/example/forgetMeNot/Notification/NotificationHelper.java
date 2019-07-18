@@ -48,16 +48,23 @@ public class NotificationHelper extends ContextWrapper {
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 
         // Action: if expired item is no longer available
-        Intent unavailable = new Intent(getApplicationContext(), UnavailableReceiver.class);
-        unavailable.putExtra("Necessity", necessity);
-        unavailable.putExtra("Food", food);
-        PendingIntent actionIntent = PendingIntent.getBroadcast(getApplicationContext(), food.hashCode(), unavailable, 0);
+        Intent remove = new Intent(getApplicationContext(), RemoveReceiver.class);
+        remove.putExtra("Necessity", necessity);
+        remove.putExtra("Food", food);
+        PendingIntent removeIntent = PendingIntent.getBroadcast(getApplicationContext(), food.hashCode(), remove, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Action: Purchase
+        Intent purchase = new Intent(getApplicationContext(), PurchaseReceiver.class);
+        purchase.putExtra("Necessity", necessity);
+        purchase.putExtra("Food", food);
+        PendingIntent purchaseIntent = PendingIntent.getBroadcast(getApplicationContext(), food.hashCode(), purchase, PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle("Forget Me Not!")
                 .setContentText("Your " + food + " has expired!")
                 .setSmallIcon(R.drawable.ic_warning_black_24dp)
-                .addAction(R.mipmap.ic_launcher, "It's gone!", actionIntent)
+                .addAction(R.mipmap.ic_launcher, "Food cleared!", removeIntent)
+                .addAction(R.mipmap.ic_launcher, "Purchase!", purchaseIntent)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true);
