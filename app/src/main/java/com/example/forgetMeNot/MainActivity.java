@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Display user's name and email in navigation view
-        // TODO Takes too long to load!
+        // TODO Takes too long to load! do something in displaySelectedScreen?
         View navHeader = navigationView.getHeaderView(0);
         name = (TextView) navHeader.findViewById(R.id.name_textView);
         email = (TextView) navHeader.findViewById(R.id.email_textView);

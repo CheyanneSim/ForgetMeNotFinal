@@ -68,7 +68,7 @@ public class AddToInventory extends AppCompatDialogFragment {
                                 Date date = formatter.parse(expiry.getText().toString());
                                 listener.addItem(toAdd, date);
                                 // Set alarm
-                                Alarm.setAlarm(getContext(), date, toAdd.hashCode());
+                                Alarm.setAlarm(getContext(), date, toAdd, false, toAdd.hashCode());
                             }
                         } catch (ParseException e) {
                             Toast.makeText(getContext(), "Please check your date input!", Toast.LENGTH_LONG).show();

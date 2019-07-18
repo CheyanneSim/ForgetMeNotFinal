@@ -29,8 +29,6 @@ import java.util.Date;
 import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
 import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
-// TODO add OCR technology for expiry date
-
 public class MyInventory extends AppCompatActivity implements AddToInventory.DialogListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();

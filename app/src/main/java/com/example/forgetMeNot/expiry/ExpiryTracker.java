@@ -12,10 +12,6 @@ import android.widget.ExpandableListView;
 
 import com.example.forgetMeNot.R;
 
-// TODO
-// Expandable list view: http://androidtechpoint.blogspot.com/2017/01/android-expandable-listview.html
-// sort according to expiry
-// notification stuff
 
 public class ExpiryTracker extends AppCompatActivity {
 

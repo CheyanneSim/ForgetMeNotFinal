@@ -90,7 +90,7 @@ public class AddToNecessities extends AppCompatDialogFragment {
                                     Date expiryDate = formatter.parse(expiry.getText().toString());
                                     listener.addItem(toAdd, expiryDate, isFood, isAvailable);
                                     // Set alarm
-                                    Alarm.setAlarm(getContext(), expiryDate, toAdd.hashCode());
+                                    Alarm.setAlarm(getContext(), expiryDate, toAdd, true, toAdd.hashCode());
                                 } catch (ParseException e) {
                                     Toast.makeText(getContext(), "Please check your date input!", Toast.LENGTH_LONG).show();
                                 }

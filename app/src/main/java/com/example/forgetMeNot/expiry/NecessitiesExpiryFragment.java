@@ -151,7 +151,7 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
                         if (!queryDocumentSnapshots.isEmpty()) {
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                                 boolean isAvailable = (boolean) doc.getData().get(Necessity.availabilityKey);
-                                if (isAvailable) {
+                                if (isAvailable && doc.contains(Necessity.expiryKey)) {
                                     String item = doc.getString(Necessity.itemKey);
                                     Date expiry = doc.getDate(Necessity.expiryKey);
                                     Food necessity = new Food(item, expiry, isAvailable);
@@ -230,6 +230,6 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
         setListView();
 
         // Reset alarm
-        Alarm.setAlarm(getContext(), expiry, item.hashCode());
+        Alarm.setAlarm(getContext(), expiry, item, true, item.hashCode());
     }
 }
