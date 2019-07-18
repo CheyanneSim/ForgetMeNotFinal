@@ -13,13 +13,13 @@ import android.support.v4.app.NotificationCompat;
 import com.example.forgetMeNot.Inventory.MyInventory;
 import com.example.forgetMeNot.R;
 
-public class NotificationHelper extends ContextWrapper {
+public class SecondNotificationHelper extends ContextWrapper {
     public static final String channelID = "channelID";
     public static final String channelName = "Channel Name";
 
     private NotificationManager mManager;
 
-    public NotificationHelper(Context base) {
+    public SecondNotificationHelper(Context base) {
         super(base);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel();

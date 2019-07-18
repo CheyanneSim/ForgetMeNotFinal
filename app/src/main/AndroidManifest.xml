@@ -38,9 +38,11 @@
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr"/>
-        <receiver android:name=".Notification.AlertReceiver"/>
+        <receiver android:name=".Notification.FirstAlertReceiver"/>
         <receiver android:name=".Notification.RemoveReceiver"/>
         <receiver android:name=".Notification.PurchaseReceiver"/>
+        <receiver android:name=".Notification.DismissReceiver"/>
+        <receiver android:name=".Notification.SecondAlertReceiver"/>
 
     </application>
 
