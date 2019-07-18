@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.forgetMeNot.Inventory.Food;
+import com.example.forgetMeNot.Notification.Alarm;
 import com.example.forgetMeNot.R;
 import com.example.forgetMeNot.necessities.Necessity;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -150,17 +151,15 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
                         if (!queryDocumentSnapshots.isEmpty()) {
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                                 boolean isAvailable = (boolean) doc.getData().get(Necessity.availabilityKey);
-                                if (doc.contains(Necessity.expiryKey) && isAvailable) {
+                                if (isAvailable) {
                                     String item = doc.getString(Necessity.itemKey);
-                                    if (doc.contains(Necessity.expiryKey)) {
-                                        Date expiry = doc.getDate(Necessity.expiryKey);
-                                        Food necessity = new Food(item, expiry, isAvailable);
-                                        foods.add(necessity);
-                                        if (!dates.contains(expiry)) {
-                                            dates.add(expiry);
-                                        }
-                                        searches.add(item);
+                                    Date expiry = doc.getDate(Necessity.expiryKey);
+                                    Food necessity = new Food(item, expiry, isAvailable);
+                                    foods.add(necessity);
+                                    if (!dates.contains(expiry)) {
+                                        dates.add(expiry);
                                     }
+                                    searches.add(item);
                                 }
                             }
 
@@ -217,6 +216,9 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
 
         // Update listview
         setListView();
+
+        // Cancel alarm
+        Alarm.cancelAlarm(getContext(), item.hashCode());
     }
 
     @Override
@@ -226,5 +228,8 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
 
         //Update listview
         setListView();
+
+        // Reset alarm
+        Alarm.setAlarm(getContext(), expiry, item.hashCode());
     }
 }

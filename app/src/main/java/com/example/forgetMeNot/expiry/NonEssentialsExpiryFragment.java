@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.forgetMeNot.Inventory.Food;
+import com.example.forgetMeNot.Notification.Alarm;
 import com.example.forgetMeNot.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -205,11 +206,15 @@ public class NonEssentialsExpiryFragment extends Fragment implements EditExpiryD
     public void delete(String item) {
         nonEssentialCollectionRef.document(item).delete();
         setListView();
+        // Cancel Alarm
+        Alarm.cancelAlarm(getContext(), item.hashCode());
     }
 
     @Override
     public void update(String item, Date expiry) {
         nonEssentialCollectionRef.document(item).update("Expiry Date", expiry);
         setListView();
+        // Reset Alarm
+        Alarm.setAlarm(getContext(), expiry, item.hashCode());
     }
 }

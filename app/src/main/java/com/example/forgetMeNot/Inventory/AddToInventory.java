@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.forgetMeNot.Notification.Alarm;
 import com.example.forgetMeNot.OCR.OCR;
 import com.example.forgetMeNot.R;
 
@@ -66,6 +67,8 @@ public class AddToInventory extends AppCompatDialogFragment {
                             } else {
                                 Date date = formatter.parse(expiry.getText().toString());
                                 listener.addItem(toAdd, date);
+                                // Set alarm
+                                Alarm.setAlarm(getContext(), date, toAdd.hashCode());
                             }
                         } catch (ParseException e) {
                             Toast.makeText(getContext(), "Please check your date input!", Toast.LENGTH_LONG).show();

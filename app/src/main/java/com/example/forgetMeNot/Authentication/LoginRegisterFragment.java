@@ -1,4 +1,4 @@
-package com.example.forgetMeNot;
+package com.example.forgetMeNot.Authentication;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import com.example.forgetMeNot.Authentication.LoginFragment;
 import com.example.forgetMeNot.Authentication.RegisterFragment;
+import com.example.forgetMeNot.R;
 
 public class LoginRegisterFragment extends Fragment {
 
