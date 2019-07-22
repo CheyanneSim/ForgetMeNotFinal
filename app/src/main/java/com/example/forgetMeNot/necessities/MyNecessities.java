@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.example.forgetMeNot.Notification.Alarm;
 import com.example.forgetMeNot.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -94,10 +96,14 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
     private void delete(int position) {
         String item = necessities.get(position).getName();
         necessities.remove(position);
-        inList.remove(item);
+        inList.remove(item.trim().toLowerCase());
         necessitiesCollectionRef.document(item).delete();
         adapter = new NecessitiesAdapter(MyNecessities.this, R.layout.necessities_rowlayout, necessities);
         listView.setAdapter(adapter);
+        // Cancel alarms
+        Alarm.cancelAlarm(getApplicationContext(), item.hashCode());
+        Alarm.cancelAlarm(getApplicationContext(), item.hashCode() * 2);
+
         Toast.makeText(getApplicationContext(), item + " deleted from your necessities", Toast.LENGTH_LONG).show();
     }
 
@@ -186,6 +192,10 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
             necessities.add(necessity);
             adapter = new NecessitiesAdapter(MyNecessities.this, R.layout.necessities_rowlayout, necessities);
             listView.setAdapter(adapter);
+
+            // Set 2 alarms - one 5 days before, one on the day itself
+            Alarm.setFirstAlarm(getApplicationContext(), expiry, item, true, item.hashCode());
+            Alarm.setSecondAlarm(getApplicationContext(), expiry, item, true, item.hashCode());
         }
     }
 }

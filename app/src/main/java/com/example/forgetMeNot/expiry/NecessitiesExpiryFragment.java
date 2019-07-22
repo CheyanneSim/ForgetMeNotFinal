@@ -226,8 +226,9 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
         // Update listview
         setListView();
 
-        // Cancel alarm
+        // Cancel alarms
         Alarm.cancelAlarm(getContext(), item.hashCode());
+        Alarm.cancelAlarm(getContext(), item.hashCode() * 2);
     }
 
     @Override
@@ -238,7 +239,8 @@ public class NecessitiesExpiryFragment extends Fragment implements EditExpiryDia
         //Update listview
         setListView();
 
-        // Reset alarm
-        Alarm.setAlarm(getContext(), expiry, item, true, item.hashCode());
+        // Reset alarms
+        Alarm.setFirstAlarm(getContext(), expiry, item, true, item.hashCode());
+        Alarm.setSecondAlarm(getContext(), expiry, item, true, item.hashCode());
     }
 }

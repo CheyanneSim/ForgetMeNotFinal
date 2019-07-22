@@ -13,13 +13,13 @@ import android.support.v4.app.NotificationCompat;
 import com.example.forgetMeNot.Inventory.MyInventory;
 import com.example.forgetMeNot.R;
 
-public class SecondNotificationHelper extends ContextWrapper {
+public class NotificationHelper extends ContextWrapper {
     public static final String channelID = "channelID";
     public static final String channelName = "Channel Name";
 
     private NotificationManager mManager;
 
-    public SecondNotificationHelper(Context base) {
+    public NotificationHelper(Context base) {
         super(base);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel();
@@ -41,7 +41,7 @@ public class SecondNotificationHelper extends ContextWrapper {
         return mManager;
     }
 
-    public NotificationCompat.Builder getChannelNotification(String food, Boolean necessity) {
+    public NotificationCompat.Builder getChannelNotification(String food, Boolean necessity, int alarmNo) {
 
         // When user clicks the notification, open the app to the inventory page
         Intent intent = new Intent(getApplicationContext(), MyInventory.class);
@@ -51,22 +51,30 @@ public class SecondNotificationHelper extends ContextWrapper {
         Intent remove = new Intent(getApplicationContext(), RemoveReceiver.class);
         remove.putExtra("Necessity", necessity);
         remove.putExtra("Food", food);
+        remove.putExtra("Alarm", alarmNo);
         PendingIntent removeIntent = PendingIntent.getBroadcast(getApplicationContext(), food.hashCode(), remove, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Action: Purchase
         Intent purchase = new Intent(getApplicationContext(), PurchaseReceiver.class);
         purchase.putExtra("Necessity", necessity);
         purchase.putExtra("Food", food);
+        purchase.putExtra("Alarm", alarmNo);
         PendingIntent purchaseIntent = PendingIntent.getBroadcast(getApplicationContext(), food.hashCode(), purchase, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        return new NotificationCompat.Builder(getApplicationContext(), channelID)
+        NotificationCompat.Builder notif = new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle("Forget Me Not!")
-                .setContentText("Your " + food + " has expired!")
                 .setSmallIcon(R.drawable.ic_warning_black_24dp)
                 .addAction(R.mipmap.ic_launcher, "Food cleared!", removeIntent)
                 .addAction(R.mipmap.ic_launcher, "Purchase!", purchaseIntent)
                 .setContentIntent(contentIntent)
-                .setAutoCancel(true)
-                .setOnlyAlertOnce(true);
+                .setAutoCancel(true);
+
+        if (alarmNo == 1) {
+            notif.setContentText("Your " + food + " is expiring in 5 days!");
+        } else {
+            notif.setContentText("Your " + food + " has expired!");
+        }
+
+        return notif;
     }
 }

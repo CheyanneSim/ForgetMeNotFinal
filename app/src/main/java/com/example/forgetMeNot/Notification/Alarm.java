@@ -12,25 +12,41 @@ public class Alarm {
 
     public static void cancelAlarm(Context context, int requestCode) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, FirstAlertReceiver.class);
+        Intent intent = new Intent(context, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
         alarmManager.cancel(pendingIntent);
     }
 
-    public static void setAlarm(Context context, Date expiryDate, String food, boolean necessity, int requestCode) {
+    public static void setFirstAlarm(Context context, Date expiryDate, String food, boolean necessity, int requestCode) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, FirstAlertReceiver.class);
+        Intent intent = new Intent(context, AlertReceiver.class);
         intent.putExtra("Food", food);
         intent.putExtra("Necessity", necessity);
-        intent.putExtra("Expiry in ms", expiryDate.getTime());
+        intent.putExtra("Alarm", 1);
 
         // Set first alarm 5 days before expiry date
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(expiryDate);
-        cal.add(Calendar.DATE, -5);
+        Calendar first = Calendar.getInstance();
+        first.setTime(expiryDate);
+        first.add(Calendar.DATE, -5);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        PendingIntent firstPendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, first.getTimeInMillis(), firstPendingIntent);
+    }
+
+    public static void setSecondAlarm(Context context, Date expiryDate, String food, boolean necessity, int requestCode) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlertReceiver.class);
+        intent.putExtra("Food", food);
+        intent.putExtra("Necessity", necessity);
+        intent.putExtra("Alarm", 2);
+
+        // Set second alarm on expiry date
+        Calendar second = Calendar.getInstance();
+        second.setTime(expiryDate);
+
+        // requestCode for second alarm will be first * 2
+        PendingIntent secondPendingIntent = PendingIntent.getBroadcast(context, requestCode * 2, intent, 0);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, second.getTimeInMillis(), secondPendingIntent);
     }
 
 }

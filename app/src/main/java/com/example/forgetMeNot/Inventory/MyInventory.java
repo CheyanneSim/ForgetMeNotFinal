@@ -15,6 +15,7 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.example.forgetMeNot.Notification.Alarm;
 import com.example.forgetMeNot.R;
 import com.example.forgetMeNot.necessities.Necessity;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -111,25 +112,6 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
 
             @Override
             public void create(SwipeMenu menu) {
-                // create "open" item
-                /*
-                SwipeMenuItem openItem = new SwipeMenuItem(
-                        getApplicationContext());
-                // set item background
-                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
-                // set item width
-                openItem.setWidth(170);
-                // set item title
-                openItem.setTitle("Open");
-                // set item title fontsize
-                openItem.setTitleSize(18);
-                // set item title font color
-                openItem.setTitleColor(Color.WHITE);
-                // add to menu
-                menu.addMenuItem(openItem);
-                */
-
                 // create "delete" item
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
                         getApplicationContext());
@@ -148,20 +130,10 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
         // set creator
         listView.setMenuCreator(creator);
 
-        // TODO open button
         listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                //switch (index) {
-                    //case 0:
-                   /*     // open
-                        break;
-                    case 1:*/
-                        // delete
-                        delete(position);
-                        //break;
-                //}
-                // false : close the menu; true : not close the menu
+                delete(position);
                 return false;
             }
         });
@@ -170,11 +142,16 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
     private void delete(int position) {
         String item = arrayList.get(position).getName();
         arrayList.remove(position);
-        inList.remove(item.toLowerCase());
+        inList.remove(item.trim().toLowerCase());
         nonEssentialsCollectionRef.document(item).delete();
         necessitiesCollectionRef.document(item).update("Availability", false);
         adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
         listView.setAdapter(adapter);
+
+        // Cancel alarms
+        Alarm.cancelAlarm(getApplicationContext(), item.hashCode());
+        Alarm.cancelAlarm(getApplicationContext(), item.hashCode() * 2);
+
         Toast.makeText(getApplicationContext(), item + " deleted from your inventory", Toast.LENGTH_LONG).show();
     }
 
@@ -231,6 +208,10 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
             arrayList.add(toAdd);
             adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
             listView.setAdapter(adapter);
+
+            // Set 2 alarms - one 5 days before, one on the day itself
+            Alarm.setFirstAlarm(getApplicationContext(), expiry, item, false, item.hashCode());
+            Alarm.setSecondAlarm(getApplicationContext(), expiry, item, false, item.hashCode());
         }
     }
 }

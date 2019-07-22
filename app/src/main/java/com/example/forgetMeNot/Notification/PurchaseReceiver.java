@@ -25,6 +25,7 @@ public class PurchaseReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         group = sharedPreferences.getString(GROUP, "");
         String food = intent.getStringExtra("Food");
+        int alarmNo = intent.getIntExtra("Alarm", 0);
         boolean necessity = intent.getBooleanExtra("Necessity", true);
         if (necessity) {
             necessitiesCollectionRef = db.collection("Groups").document(group).collection("Necessities");
@@ -39,6 +40,13 @@ public class PurchaseReceiver extends BroadcastReceiver {
             data.put("Is Food", true);
             extraShoppingListCollection.document(food).set(data);
         }
+
+        // Cancel 2nd alarm if it is the first alarm
+        if (alarmNo == 1) {
+            Log.d("PurchaseReceiver", "Second alarm cancelled");
+            Alarm.cancelAlarm(context, food.hashCode() * 2);
+        }
+
         context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
     }
 }

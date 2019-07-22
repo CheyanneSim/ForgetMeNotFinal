@@ -215,15 +215,17 @@ public class NonEssentialsExpiryFragment extends Fragment implements EditExpiryD
     public void delete(String item) {
         nonEssentialCollectionRef.document(item).delete();
         setListView();
-        // Cancel Alarm
+        // Cancel Alarms
         Alarm.cancelAlarm(getContext(), item.hashCode());
+        Alarm.cancelAlarm(getContext(), item.hashCode() * 2);
     }
 
     @Override
     public void update(String item, Date expiry) {
         nonEssentialCollectionRef.document(item).update("Expiry Date", expiry);
         setListView();
-        // Reset Alarm
-        Alarm.setAlarm(getContext(), expiry, item, false, item.hashCode());
+        // Reset Alarms
+        Alarm.setFirstAlarm(getContext(), expiry, item, false, item.hashCode());
+        Alarm.setSecondAlarm(getContext(), expiry, item, false, item.hashCode());
     }
 }

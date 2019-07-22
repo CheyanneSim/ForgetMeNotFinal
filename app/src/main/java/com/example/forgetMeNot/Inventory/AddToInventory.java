@@ -71,8 +71,6 @@ public class AddToInventory extends AppCompatDialogFragment {
                             } else {
                                 Date date = formatter.parse(expiry.getText().toString());
                                 listener.addItem(toAdd, date);
-                                // Set alarm
-                                Alarm.setAlarm(getContext(), date, toAdd, false, toAdd.hashCode());
                             }
                         } catch (ParseException e) {
                             Toast.makeText(getContext(), "Please choose an expiry date!", Toast.LENGTH_LONG).show();
