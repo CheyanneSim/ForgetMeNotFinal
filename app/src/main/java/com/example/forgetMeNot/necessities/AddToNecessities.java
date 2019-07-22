@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,9 +18,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.forgetMeNot.Notification.Alarm;
+import com.example.forgetMeNot.OCR.OCR;
 import com.example.forgetMeNot.R;
 
 import java.text.ParseException;
@@ -27,12 +30,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static android.app.Activity.RESULT_OK;
+
 public class AddToNecessities extends AppCompatDialogFragment {
 
     private EditText item;
     private Button expiry;
     private CheckBox food;
     private CheckBox available;
+    private ImageButton scanFood;
     private DialogListener listener;
     private SimpleDateFormat formatter;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -45,6 +51,7 @@ public class AddToNecessities extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.add_to_necessities_dialog, null);
 
         item = view.findViewById(R.id.item_to_add_editText);
+        scanFood = view.findViewById(R.id.scan_food);
         food = view.findViewById(R.id.food_checkBox);
         available = view.findViewById(R.id.availability_checkbox);
         expiry = view.findViewById(R.id.choose_expiry_btn);
@@ -101,6 +108,13 @@ public class AddToNecessities extends AppCompatDialogFragment {
             }
         };
 
+        scanFood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getContext(), OCR.class), 0);
+            }
+        });
+
         builder.setView(view)
                 .setTitle("Add To Necessities")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -140,6 +154,17 @@ public class AddToNecessities extends AppCompatDialogFragment {
         return builder.create();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            String text = data.getStringExtra("Recognised Text");
+            switch (requestCode) {
+                case 0:
+                    item.setText(text);
+                    break;
+            }
+        }
+    }
 
     @Override
     public void onAttach(Context context) {

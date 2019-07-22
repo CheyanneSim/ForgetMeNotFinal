@@ -129,9 +129,6 @@ public class AddToInventory extends AppCompatDialogFragment {
                 case 0:
                     food.setText(text);
                     break;
-                case 1:
-                    expiry.setText(text);
-                    break;
             }
         }
     }
