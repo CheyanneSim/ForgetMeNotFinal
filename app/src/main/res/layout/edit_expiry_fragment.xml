@@ -2,51 +2,58 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="right|top"
     android:padding="56dp">
 
-    <EditText
-        android:id="@+id/expiry_editText"
+    <TextView
+        android:id="@+id/expiry_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:ems="10"
-        android:hint="Expiry (DD/MM/YY)"
-        android:inputType="date"
+        android:text=""
         android:textAlignment="center"
-        android:textSize="12sp" />
+        android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/cancel"
+    <Button
+        android:id="@+id/change_expiry_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/expiry_editText"
+        android:layout_below="@id/expiry_textView"
+        android:layout_centerHorizontal="true"
+        android:text="Choose Expiry Date" />
+
+    <TextView
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/change_expiry_btn"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="10dp"
-        android:text="CANCEL"
-        android:textColor="#0048FF"
+        android:layout_centerHorizontal="true"
+        android:text="DELETE"
+        android:textColor="@color/Black"
         android:textSize="12sp" />
 
     <TextView
         android:id="@+id/update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/expiry_editText"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp"
+        android:layout_below="@id/change_expiry_btn"
+        android:layout_centerHorizontal="true"
         android:text="UPDATE"
-        android:textColor="#0048FF"
-        android:textSize="12sp" />
+        android:textColor="@color/Black"
+        android:textSize="12sp"
+        tools:layout_below="@id/change_expiry_btn" />
 
     <TextView
-        android:id="@+id/delete"
+        android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/expiry_editText"
+        android:layout_below="@id/change_expiry_btn"
+        android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:text="DELETE"
-        android:textColor="#0048FF"
+        android:text="CANCEL"
+        android:textColor="@color/Black"
         android:textSize="12sp" />
 
 </RelativeLayout>

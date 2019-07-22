@@ -72,7 +72,16 @@ public class NonEssentialsExpiryFragment extends Fragment implements EditExpiryD
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 String item = (String) parent.getExpandableListAdapter().getChild(groupPosition, childPosition);
-                EditExpiryDialog dialog = new EditExpiryDialog(item);
+                String currentExpiry = "No Expiry";
+                for (Food food : foods) {
+                    if (food.getFood().equals(item)) {
+                        if (food.getExpiry() != null) {
+                            currentExpiry = formatter.format(food.getExpiry());
+                        }
+                        break;
+                    }
+                }
+                EditExpiryDialog dialog = new EditExpiryDialog(item, currentExpiry);
                 dialog.setTargetFragment(NonEssentialsExpiryFragment.this,1);
                 dialog.setStyle(EditExpiryDialog.STYLE_NORMAL, R.style.CustomDialog);
                 dialog.show(getFragmentManager(), "Edit Expiry Date");

@@ -1,16 +1,21 @@
 package com.example.forgetMeNot.necessities;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,15 +24,18 @@ import com.example.forgetMeNot.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class AddToNecessities extends AppCompatDialogFragment {
 
-    private EditText item, expiry;
+    private EditText item;
+    private Button expiry;
     private CheckBox food;
     private CheckBox available;
     private DialogListener listener;
     private SimpleDateFormat formatter;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -39,7 +47,7 @@ public class AddToNecessities extends AppCompatDialogFragment {
         item = view.findViewById(R.id.item_to_add_editText);
         food = view.findViewById(R.id.food_checkBox);
         available = view.findViewById(R.id.availability_checkbox);
-        expiry = view.findViewById(R.id.expiry_editText);
+        expiry = view.findViewById(R.id.choose_expiry_btn);
         formatter = new SimpleDateFormat("dd/MM/yy");
         formatter.setLenient(false);
 
@@ -65,6 +73,33 @@ public class AddToNecessities extends AppCompatDialogFragment {
                 }
             }
         });
+
+        expiry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        getActivity(),
+                        android.R.style.Theme_Holo_Dialog_MinWidth,
+                        mDateSetListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month += 1;
+                String date = dayOfMonth + "/" + month + "/" + year;
+                expiry.setText(date);
+            }
+        };
 
         builder.setView(view)
                 .setTitle("Add To Necessities")

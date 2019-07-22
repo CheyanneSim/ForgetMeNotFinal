@@ -69,7 +69,8 @@ public class OCR extends AppCompatActivity {
             cameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
                     .setFacing(CameraSource.CAMERA_FACING_BACK)
                     .setRequestedPreviewSize(1280, 1024)
-                    .setRequestedFps(2.0f)
+                    //.setRequestedFps(2.0f)
+                    .setRequestedFps(0.5f)
                     .setAutoFocusEnabled(true)
                     .build();
             cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {

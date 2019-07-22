@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="right|top"
+    android:clickable="true"
     android:padding="56dp">
 
     <TextView
@@ -27,17 +28,16 @@
         android:textAlignment="center"
         android:textSize="14sp" />
 
-    <EditText
-        android:id="@+id/expiry_editText"
+    <Button
+        android:id="@+id/choose_expiry_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/non_essential_item_editText"
         android:layout_centerHorizontal="true"
-        android:ems="10"
-        android:hint="Expiry Date (DD/MM/YY)"
-        android:inputType="date"
+        android:text="Choose Expiry Date"
         android:textAlignment="center"
-        android:textSize="14sp" />
+        android:textColor="@color/Black"
+        android:textSize="14sp"/>
 
     <ImageButton
         android:id="@+id/scan_food"
@@ -45,14 +45,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textView"
         android:layout_toRightOf="@id/non_essential_item_editText"
-        app:srcCompat="@drawable/ic_menu_camera" />
-
-    <ImageButton
-        android:id="@+id/scan_expiry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/non_essential_item_editText"
-        android:layout_toRightOf="@id/expiry_editText"
         app:srcCompat="@drawable/ic_menu_camera" />
 
 </RelativeLayout>
