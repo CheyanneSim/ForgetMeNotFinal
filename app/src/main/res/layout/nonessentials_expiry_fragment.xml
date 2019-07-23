@@ -16,7 +16,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:completionThreshold="1"
-            android:hint="Search nonessentials" />
+            android:hint="Search non-essentials" />
 
         <ImageButton
             android:id="@+id/cancel_btn"

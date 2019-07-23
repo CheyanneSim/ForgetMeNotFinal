@@ -51,8 +51,6 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         boolean purchase = sharedPreferences.getBoolean(name, false);
         formatter = new SimpleDateFormat("dd/MM/yy");
 
-        Log.d("Log back on", "" + purchase);
-
         Item item = new Item(name, expiry, purchase);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
@@ -63,7 +61,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
         tvItem.setText(name);
         if (expiry == null) {
-            tvExpiry.setText("N.A.");
+            tvExpiry.setText("Nil");
         } else {
             tvExpiry.setText(formatter.format(expiry));
         }

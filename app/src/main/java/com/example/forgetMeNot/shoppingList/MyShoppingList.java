@@ -133,7 +133,8 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
     public void removePurchased(View view) {
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
-        for (String item : selectedItems) {
+        for (int i = 0; i < selectedItems.size(); i++) {
+            final String item = selectedItems.get(i);
             items.remove(item);
             necessitiesCollectionRef.document(item).update("Availability", true);
             necessitiesCollectionRef.document(item).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -143,35 +144,35 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
                         if (documentSnapshot.contains("Expiry Date")) {
                             documentSnapshot.getReference().update("Expiry Date", null);
                         }
-                    }
-                }
-            });
-
-            // If it is non-essential food item, add it to My Inventory, then delete from Shopping List
-            extraShoppingListCollection.document(item).get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("Item");
-                        boolean food = documentSnapshot.getBoolean("Is Food");
-                        if (food) {
-                            // Add to Firestore under Non-essentials
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("Availability", true);
-                            data.put("Expiry Date", null);
-                            data.put("Food", name);
-                            nonEssentialsCollectionRef.document(name).set(data);
-                            Log.d("My tag", "added to inventory");
-                        }
-                    }
-                }
-            }).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("Item");
-                        extraShoppingListCollection.document(name).delete();
+                    } else {
+                        // If it is non-essential food item, add it to My Inventory, then delete from Shopping List
+                        extraShoppingListCollection.document(item).get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        if (documentSnapshot.exists()) {
+                                            String name = documentSnapshot.getString("Item");
+                                            boolean food = documentSnapshot.getBoolean("Is Food");
+                                            if (food) {
+                                                // Add to Firestore under Non-essentials
+                                                Map<String, Object> data = new HashMap<>();
+                                                data.put("Availability", true);
+                                                data.put("Expiry Date", null);
+                                                data.put("Food", name);
+                                                nonEssentialsCollectionRef.document(name).set(data);
+                                                Log.d("My tag", "added to inventory");
+                                            }
+                                        }
+                                    }
+                                }).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.exists()) {
+                                    String name = documentSnapshot.getString("Item");
+                                    extraShoppingListCollection.document(name).delete();
+                                }
+                            }
+                        });
                     }
                 }
             });

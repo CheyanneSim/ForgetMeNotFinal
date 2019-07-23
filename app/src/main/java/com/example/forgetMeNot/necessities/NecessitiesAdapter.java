@@ -46,7 +46,7 @@ public class NecessitiesAdapter extends ArrayAdapter<Necessity> {
         }
         tvItem.setText(name);
         if (expiry == null) {
-            tvExpiry.setText("N.A.");
+            tvExpiry.setText("Nil");
         } else {
             tvExpiry.setText(formatter.format(expiry));
         }

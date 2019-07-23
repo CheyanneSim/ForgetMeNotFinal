@@ -107,7 +107,9 @@ public class GroupFragment extends Fragment {
     }
 
     private void createGroup(String group, String password) {
-        if (existingGroups.contains(group)) {
+        if (group.equals("")) {
+            Toast.makeText(getActivity().getApplicationContext(), "Please input a group name!", Toast.LENGTH_LONG).show();
+        } else if (existingGroups.contains(group)) {
             Toast.makeText(getActivity().getApplicationContext(), "This group name is already taken, pick another one!", Toast.LENGTH_LONG).show();
         } else {
             Map<String, Object> data = new HashMap<>();
@@ -125,7 +127,9 @@ public class GroupFragment extends Fragment {
     }
 
     private void checkValidity(final String group, final String password) {
-        if (group.equals(groupTextView.getText().toString())) {
+        if (group.equals("")) {
+            Toast.makeText(getActivity().getApplicationContext(), "Please input the group name!", Toast.LENGTH_LONG).show();
+        } else if (group.equals(groupTextView.getText().toString())) {
             Toast.makeText(getActivity().getApplicationContext(), "You are already in the group!", Toast.LENGTH_LONG).show();
         } else if (existingGroups.contains(group)) {
             db.collection(grpKey).document(group).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

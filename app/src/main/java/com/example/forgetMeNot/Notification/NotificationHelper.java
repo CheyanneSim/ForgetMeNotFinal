@@ -70,7 +70,7 @@ public class NotificationHelper extends ContextWrapper {
                 .setAutoCancel(true);
 
         if (alarmNo == 1) {
-            notif.setContentText("Your " + food + " is expiring in 5 days!");
+            notif.setContentText("Your " + food + " is expiring in less than 6 days!");
         } else {
             notif.setContentText("Your " + food + " has expired!");
         }

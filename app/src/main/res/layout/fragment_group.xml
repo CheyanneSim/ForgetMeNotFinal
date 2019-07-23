@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textColor="#000000"
-        android:textSize="24sp"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <TextView
@@ -25,7 +25,7 @@
         android:text="Current Group: "
         android:textAlignment="viewStart"
         android:textColor="#000000"
-        android:textSize="30sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/group_name_textView"
@@ -42,7 +42,7 @@
         android:text="Have a group? Key in your group name below!"
         android:textAlignment="center"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <EditText
@@ -51,6 +51,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Group Name"
+        android:imeOptions="actionNext"
         android:inputType="textPersonName"
         android:textAlignment="viewStart" />
 
@@ -60,6 +61,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Password"
+        android:imeOptions="actionDone"
         android:inputType="textPassword" />
 
     <Button
@@ -75,7 +77,7 @@
         android:text="No Group? Choose a group name!"
         android:textAlignment="center"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <EditText
@@ -84,6 +86,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Group Name"
+        android:imeOptions="actionNext"
         android:inputType="textPersonName"
         android:textAlignment="viewStart" />
 
@@ -93,6 +96,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Create Password"
+        android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:textAlignment="viewStart" />
 
