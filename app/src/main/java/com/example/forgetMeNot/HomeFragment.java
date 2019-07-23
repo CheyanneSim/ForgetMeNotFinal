@@ -32,7 +32,7 @@ public class HomeFragment extends Fragment {
         @Override
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
-            getActivity().setTitle("Home Screen");
+            getActivity().setTitle("Home");
             mAuth = FirebaseAuth.getInstance();
 
             userEmailTV = view.findViewById(R.id.userEmail);

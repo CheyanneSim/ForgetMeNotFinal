@@ -35,7 +35,7 @@
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#03A9F4"
+        android:background="#BDE4E9"
         android:text="Login" />
 
     <TextView
