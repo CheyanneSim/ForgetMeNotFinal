@@ -3,7 +3,7 @@
     package="com.example.forgetMeNot">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -12,24 +12,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".necessities.MyNecessities"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name=".shoppingList.MyShoppingList"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".Inventory.MyInventory"/>
-        <activity android:name=".expiry.ExpiryTracker"/>
-        <activity android:name=".OCR.OCR"/>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".Tutorial.Tutorial">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".necessities.MyNecessities"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".shoppingList.MyShoppingList"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Inventory.MyInventory" />
+        <activity android:name=".expiry.ExpiryTracker" />
+        <activity android:name=".OCR.OCR" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
 
         <meta-data
@@ -37,11 +40,11 @@
             android:resource="@array/preloaded_fonts" />
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="ocr"/>
-        <receiver android:name=".Notification.AlertReceiver"/>
-        <receiver android:name=".Notification.RemoveReceiver"/>
-        <receiver android:name=".Notification.PurchaseReceiver"/>
+            android:value="ocr" />
 
+        <receiver android:name=".Notification.AlertReceiver" />
+        <receiver android:name=".Notification.RemoveReceiver" />
+        <receiver android:name=".Notification.PurchaseReceiver" />
     </application>
 
 </manifest>
