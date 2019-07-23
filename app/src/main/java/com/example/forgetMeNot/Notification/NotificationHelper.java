@@ -7,17 +7,28 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.example.forgetMeNot.Inventory.MyInventory;
 import com.example.forgetMeNot.R;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
+import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
 public class NotificationHelper extends ContextWrapper {
     public static final String channelID = "channelID";
     public static final String channelName = "Channel Name";
 
     private NotificationManager mManager;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference extraShoppingListCollection;
 
     public NotificationHelper(Context base) {
         super(base);
@@ -62,7 +73,7 @@ public class NotificationHelper extends ContextWrapper {
         PendingIntent purchaseIntent = PendingIntent.getBroadcast(getApplicationContext(), food.hashCode(), purchase, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder notif = new NotificationCompat.Builder(getApplicationContext(), channelID)
-                .setContentTitle("Forget Me Not!")
+                .setContentTitle(food)
                 .setSmallIcon(R.drawable.ic_warning_black_24dp)
                 .addAction(R.mipmap.ic_launcher, "Food cleared!", removeIntent)
                 .addAction(R.mipmap.ic_launcher, "Purchase!", purchaseIntent)
@@ -70,9 +81,20 @@ public class NotificationHelper extends ContextWrapper {
                 .setAutoCancel(true);
 
         if (alarmNo == 1) {
-            notif.setContentText("Your " + food + " is expiring in less than 6 days!");
+            notif.setContentText("Expiring in less than 6 days!");
         } else {
-            notif.setContentText("Your " + food + " has expired!");
+            notif.setContentText("Expired! Remember to discard!");
+            // If it is necessity, add to shopping list.
+            if (necessity) {
+                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+                String group = sharedPreferences.getString(GROUP, "");
+                extraShoppingListCollection = db.collection("Groups").document(group).collection("Shopping List");
+                Map<String, Object> data = new HashMap<>();
+                data.put("Item", food);
+                // If it's not food, it will be part of Necessities
+                data.put("Is Food", true);
+                extraShoppingListCollection.document(food).set(data);
+            }
         }
 
         return notif;
