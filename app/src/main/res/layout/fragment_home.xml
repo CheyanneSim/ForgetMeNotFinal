@@ -10,6 +10,7 @@
         android:id="@+id/textView9"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FAFDFD"
         android:fontFamily="cursive"
         android:gravity="center"
         android:text="Forget Me Not"
@@ -42,12 +43,12 @@
         android:id="@+id/userEmail"
         android:layout_width="wrap_content"
 
-      
 
         android:layout_height="wrap_content"
+        android:fontFamily="cursive"
         android:text="@string/welcome"
         android:textColor="#3F51B5"
-        android:textSize="30sp"
+        android:textSize="36sp"
         android:textStyle="bold|italic" />
 
     <ScrollView
@@ -75,6 +76,7 @@
                     android:background="#00BCD4"
                     android:drawableRight="@drawable/groceries_icon"
                     android:gravity="center"
+                    android:shadowColor="#FFFFFF"
                     android:text="My Necessities"
                     android:textColor="#FFF"
                     android:textSize="30sp" />

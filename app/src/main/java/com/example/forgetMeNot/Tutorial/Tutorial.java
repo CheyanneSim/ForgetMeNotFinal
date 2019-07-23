@@ -56,7 +56,7 @@ public class Tutorial extends AppCompatActivity {
         // fill list screen
         final List<ScreenItem> mList = new ArrayList<>();
         mList.add(new ScreenItem("Sharing Data",
-                "You need to be in a group to begin using Forget Me Not, so that the data is shared amongst everyone in the group. \n Note that the group name is case sensitive.",
+                "You need to be in a group to begin using Forget Me Not so that the data can be shared amongst everyone in the group. \n Note that the group name is case sensitive.",
                 R.drawable.group));
         mList.add(new ScreenItem("My Necessities",
                 "Necessities are things that you need a constant supply of, that is, things that you need to replenish when you run out of them. \n When you run out of them, or if they have expired, they will be added to My Shopping List automatically.",
@@ -65,7 +65,7 @@ public class Tutorial extends AppCompatActivity {
                 "Check out what you have available at your finger tips in My Inventory. Toggle on the purchase switch to add those items to My Shopping List before they even run out.\n You can also add non-essential food items, like snacks, into My Inventory.",
                 R.drawable.snacks_icon));
         mList.add(new ScreenItem("My Shopping List",
-                "Keep track of what you have purchased and they will be added to My Inventory. \n Feel free to add more things into My Shopping List.",
+                "Keep track of what you have purchased and have your purchases added to My Inventory. \n Feel free to add more items to My Shopping List.",
                 R.drawable.shopping_icon));
         mList.add(new ScreenItem("Expiry Date Tracker",
                 "You will get your first reminder 5 days before the expiry date. Click on 'Food Cleared!', and it will be removed from My Inventory. Click on 'Purchase!' and it will be removed from my Inventory and included in My Shopping List. You will get a second reminder on the expiry day itself.",

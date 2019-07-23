@@ -68,6 +68,8 @@
         android:id="@+id/join_grp_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#BDE4E9"
+        android:drawableEnd="@drawable/join_group"
         android:text="Join Group" />
 
     <TextView
@@ -104,5 +106,7 @@
         android:id="@+id/create_grp_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#BDE4E9"
+        android:drawableEnd="@drawable/create_group"
         android:text="Create Group" />
 </LinearLayout>

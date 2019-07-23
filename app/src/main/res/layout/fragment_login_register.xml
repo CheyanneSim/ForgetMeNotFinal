@@ -9,9 +9,10 @@
         android:id="@+id/haveAcc_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/annie_use_your_telescope"
+        android:fontFamily="cursive"
         android:text="Have an account?"
         android:textAlignment="center"
+        android:textColor="#1332DD"
         android:textSize="50sp"
         android:textStyle="bold" />
 
@@ -26,9 +27,10 @@
         android:id="@+id/noAcc_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/annie_use_your_telescope"
+        android:fontFamily="cursive"
         android:text="First time user?"
         android:textAlignment="center"
+        android:textColor="#1332DD"
         android:textSize="50sp"
         android:textStyle="bold" />
 
