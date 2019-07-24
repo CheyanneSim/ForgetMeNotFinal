@@ -194,8 +194,10 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
             listView.setAdapter(adapter);
 
             // Set 2 alarms - one 5 days before, one on the day itself
-            Alarm.setFirstAlarm(getApplicationContext(), expiry, item, true, item.hashCode());
-            Alarm.setSecondAlarm(getApplicationContext(), expiry, item, true, item.hashCode());
+            if (expiry != null) {
+                Alarm.setFirstAlarm(getApplicationContext(), expiry, item, true, item.hashCode());
+                Alarm.setSecondAlarm(getApplicationContext(), expiry, item, true, item.hashCode());
+            }
         }
     }
 }

@@ -56,7 +56,6 @@ public class ExpiryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean hasStableIds() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -111,7 +110,6 @@ public class ExpiryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        // TODO Auto-generated method stub
         return true;
     }
 }

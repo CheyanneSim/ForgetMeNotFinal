@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    TextView name, email;
+    static TextView name, email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +51,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Display user's name and email in navigation view
-        // TODO Takes too long to load! do something in displaySelectedScreen?
         View navHeader = navigationView.getHeaderView(0);
         name = (TextView) navHeader.findViewById(R.id.name_textView);
         email = (TextView) navHeader.findViewById(R.id.email_textView);
-        if (mAuth.getCurrentUser() != null) {
-            name.setText(mAuth.getCurrentUser().getDisplayName());
-            email.setText(mAuth.getCurrentUser().getEmail());
-        }
+        setNameAndEmail(mAuth);
 
         // choose which screen u want to show first.
         if (mAuth.getCurrentUser() != null) {
@@ -139,7 +136,6 @@ public class MainActivity extends AppCompatActivity
             SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
             sharedPreferences.edit().clear().apply();
             name.setText("Welcome");
-            email.setText("Please log in and join a group to begin!");
             fragment = new LoginFragment();
         } else if (id == R.id.nav_group) {
             fragment = new GroupFragment();
@@ -151,6 +147,19 @@ public class MainActivity extends AppCompatActivity
             ft.replace(R.id.content_frame, fragment);
             ft.commit();
         }
+    }
+
+    public static void setNameAndEmail(FirebaseAuth mAuth) {
+        if (mAuth.getCurrentUser() != null) {
+            name.setText(mAuth.getCurrentUser().getDisplayName());
+            email.setText(mAuth.getCurrentUser().getEmail());
+        }
+    }
+
+    // Used after registration only
+    public static void setNameAndEmail(String inputname, String inputemail) {
+        name.setText(inputname);
+        email.setText(inputemail);
     }
 
     @Override

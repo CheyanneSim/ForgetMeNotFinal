@@ -10,12 +10,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.forgetMeNot.Authentication.UserDetails;
 import com.example.forgetMeNot.HomeFragment;
 import com.example.forgetMeNot.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -89,6 +89,8 @@ public class GroupFragment extends Fragment {
                 group = existingGrp.getText().toString();
                 checkValidity(group, existingpw.getText().toString());
                 existingGrp.setText("");
+                existingpw.setText("");
+                closeKeyboard();
             }
         });
 
@@ -101,6 +103,8 @@ public class GroupFragment extends Fragment {
                 group = newGrp.getText().toString();
                 createGroup(group, newpw.getText().toString());
                 newGrp.setText("");
+                newpw.setText("");
+                closeKeyboard();
             }
         });
 
@@ -172,7 +176,7 @@ public class GroupFragment extends Fragment {
         email = mAuth.getCurrentUser().getEmail();
         Map<String, Object> data = new HashMap<>();
         data.put("Group", group);
-        db.collection(UserDetails.userDetailsKey).document(email).set(data);
+        db.collection("User's Group").document(email).set(data);
 
         // Save to sharedPreferences
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
@@ -201,5 +205,13 @@ public class GroupFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_group, container, false);
 
         return view;
+    }
+
+    public void closeKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

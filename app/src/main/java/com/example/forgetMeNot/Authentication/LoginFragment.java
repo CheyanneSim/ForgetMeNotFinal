@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 
 import com.example.forgetMeNot.HomeFragment;
+import com.example.forgetMeNot.MainActivity;
 import com.example.forgetMeNot.R;
 import com.example.forgetMeNot.SharingData.GroupFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -65,13 +67,14 @@ public class LoginFragment extends Fragment  {
             @Override
             public void onClick(View v) {
                 loginUserAccount();
+                closeKeyboard();
             }
         });
 
         forgotPw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                closeKeyboard();
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, new ResetPasswordFragment());
                 ft.commit();
@@ -82,14 +85,12 @@ public class LoginFragment extends Fragment  {
     }
 
     private void loginUserAccount() {
-        progressBar.setVisibility(View.VISIBLE);
-
         final String email, password;
         email = emailEditText.getText().toString();
         password = passwordEditText.getText().toString();
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(getActivity().getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Please enter email!", Toast.LENGTH_LONG).show();
             return;
         }
         if (TextUtils.isEmpty(password)) {
@@ -97,6 +98,7 @@ public class LoginFragment extends Fragment  {
             return;
         }
 
+        progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -104,9 +106,10 @@ public class LoginFragment extends Fragment  {
                         if (task.isSuccessful()) {
                             Toast.makeText(getActivity().getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
+                            MainActivity.setNameAndEmail(mAuth);
 
                             // Save group to sharedPreferences
-                            db.collection(UserDetails.userDetailsKey).document(email)
+                            db.collection("User's Group").document(email)
                                     .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -127,7 +130,7 @@ public class LoginFragment extends Fragment  {
 
                         }
                         else {
-                            Toast.makeText(getActivity().getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "Login failed! Please try again!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
                         }
                     }
@@ -138,6 +141,13 @@ public class LoginFragment extends Fragment  {
         // Required empty public constructor
     }
 
+    public void closeKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

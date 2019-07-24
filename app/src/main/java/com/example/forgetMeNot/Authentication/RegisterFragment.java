@@ -1,5 +1,6 @@
 package com.example.forgetMeNot.Authentication;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 
 import com.example.forgetMeNot.HomeFragment;
+import com.example.forgetMeNot.MainActivity;
 import com.example.forgetMeNot.R;
 import com.example.forgetMeNot.SharingData.GroupFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,6 +53,7 @@ public class RegisterFragment extends Fragment  {
             @Override
             public void onClick(View v) {
                 registerNewUser();
+                closeKeyboard();
             }
         });
 
@@ -67,7 +71,7 @@ public class RegisterFragment extends Fragment  {
 
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(getActivity().getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Please enter email!", Toast.LENGTH_LONG).show();
             return;
         }
         if (TextUtils.isEmpty(password)) {
@@ -95,10 +99,7 @@ public class RegisterFragment extends Fragment  {
 
                             Toast.makeText(getActivity().getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
-
-                            //Create user details if successful.
-                            UserDetails currentUser = new UserDetails(name);
-                            currentUser.createEntry();
+                            MainActivity.setNameAndEmail(name, email);
 
                             // After Registering, user will be brought to the page where they will join/create group
                             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -121,6 +122,14 @@ public class RegisterFragment extends Fragment  {
         // Required empty public constructor
     }
 
+    public void closeKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -128,6 +137,4 @@ public class RegisterFragment extends Fragment  {
 
         return view;
     }
-
-
 }

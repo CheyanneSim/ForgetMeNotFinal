@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.example.forgetMeNot.Inventory.MyInventory;
 import com.example.forgetMeNot.R;
