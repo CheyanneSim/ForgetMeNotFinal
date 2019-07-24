@@ -99,8 +99,10 @@ public class MyInventory extends AppCompatActivity implements AddToInventory.Dia
                                 String name = doc.getString(Food.itemKey);
                                 Date expiry = doc.getDate(Food.expiryKey);
                                 Item item = new Item(name, expiry, false);
-                                arrayList.add(item);
-                                inList.add(name.trim().toLowerCase());
+                                if (!inList.contains(name.trim().toLowerCase())) {
+                                    arrayList.add(item);
+                                    inList.add(name.trim().toLowerCase());
+                                }
                                 adapter = new ItemListAdapter(MyInventory.this, R.layout.inventory_list_rowlayout, arrayList);
                                 listView.setAdapter(adapter);
                             }
