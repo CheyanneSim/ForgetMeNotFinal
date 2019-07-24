@@ -60,8 +60,6 @@ public class RegisterFragment extends Fragment  {
     }
 
     private void registerNewUser() {
-        progressBar.setVisibility(View.VISIBLE);
-
 
         //get the actual String or text that the user type
         final String email, password, matriculationNumber, name;
@@ -82,6 +80,8 @@ public class RegisterFragment extends Fragment  {
             Toast.makeText(getActivity().getApplicationContext(), "Please enter name!", Toast.LENGTH_LONG).show();
             return;
         }
+
+        progressBar.setVisibility(View.VISIBLE);
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {

@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.forgetMeNot.Inventory.AddToInventory;
 import com.example.forgetMeNot.Notification.Alarm;
 import com.example.forgetMeNot.OCR.OCR;
 import com.example.forgetMeNot.R;

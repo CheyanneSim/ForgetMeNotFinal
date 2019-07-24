@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.forgetMeNot.R;
 
@@ -38,7 +39,11 @@ public class AddToShoppingList extends AppCompatDialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String toAdd = item.getText().toString();
                         boolean food = isFood.isChecked();
-                        listener.addItem(toAdd, food);
+                        if (toAdd.equals("")) {
+                            Toast.makeText(getContext(), "Please input item!", Toast.LENGTH_LONG).show();
+                        } else {
+                            listener.addItem(toAdd, food);
+                        }
                     }
                 });
 
