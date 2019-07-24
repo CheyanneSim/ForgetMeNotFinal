@@ -32,7 +32,8 @@
         android:layout_centerHorizontal="true"
         android:text="Choose Expiry Date"
         android:textAlignment="center"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        android:background="#BDE4E9"/>
 
     <CheckBox
         android:id="@+id/food_checkBox"
