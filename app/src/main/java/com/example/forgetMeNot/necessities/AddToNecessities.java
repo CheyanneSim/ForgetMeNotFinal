@@ -132,15 +132,11 @@ public class AddToNecessities extends AppCompatDialogFragment {
                         if (toAdd.equals("")) {
                             Toast.makeText(getContext(), "Please enter your item!", Toast.LENGTH_LONG).show();
                         } else if (isFood && isAvailable) {
-                            if (expiry.getText().toString().equals("")) {
-                                    Toast.makeText(getContext(), "Please enter the expiry date!", Toast.LENGTH_LONG).show();
-                            } else {
-                                try {
-                                    Date expiryDate = formatter.parse(expiry.getText().toString());
-                                    listener.addItem(toAdd, expiryDate, isFood, isAvailable);
-                                } catch (ParseException e) {
-                                    Toast.makeText(getContext(), "Please check your date input!", Toast.LENGTH_LONG).show();
-                                }
+                            try {
+                                Date expiryDate = formatter.parse(expiry.getText().toString());
+                                listener.addItem(toAdd, expiryDate, isFood, isAvailable);
+                            } catch (ParseException e) {
+                                Toast.makeText(getContext(), "Please choose an expiry date!", Toast.LENGTH_LONG).show();
                             }
                         } else {
                             listener.addItem(toAdd, null, isFood, isAvailable);
