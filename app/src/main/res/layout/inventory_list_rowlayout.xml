@@ -10,6 +10,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_weight="55"
+        android:fontFamily="@font/open_sans"
         android:paddingLeft="16dp"
         android:textAlignment="viewStart"
         android:textColor="#000000" />
@@ -19,12 +20,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="35"
+        android:fontFamily="@font/open_sans"
         android:inputType="date"
         android:textAlignment="viewStart"
         android:textColor="#000000" />
 
     <Switch
         android:id="@+id/purchase_switch"
+        style="st"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="10"

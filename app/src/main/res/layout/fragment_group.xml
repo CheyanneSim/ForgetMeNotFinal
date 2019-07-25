@@ -29,28 +29,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/open_sans_light"
             android:text="Current Group: "
             android:textAlignment="viewStart"
             android:textColor="#000000"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/group_name_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/annie_use_your_telescope"
+            android:paddingBottom="16dp"
             android:textColor="#000000"
-            android:textSize="40sp" />
+            android:textSize="36sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/have_group_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_semibold"
             android:text="Have a group? Key in your group name below!"
             android:textAlignment="center"
             android:textColor="#000000"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/existing_group_editText"
@@ -83,7 +87,8 @@
             android:id="@+id/no_group_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No Group? Choose a group name!"
+            android:fontFamily="@font/open_sans_semibold"
+            android:text="No Group? Create one!"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="14sp"

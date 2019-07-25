@@ -16,13 +16,15 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:completionThreshold="1"
+            android:fontFamily="@font/open_sans"
             android:hint="Search necessities" />
 
         <ImageButton
             android:id="@+id/cancel_btn"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#BDE4E9"
             app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
     </LinearLayout>

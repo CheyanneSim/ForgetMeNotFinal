@@ -11,12 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FAFDFD"
-        android:fontFamily="cursive"
+        android:fontFamily="@font/annie_use_your_telescope"
         android:gravity="center"
         android:text="Forget Me Not"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="#673AB7"
-        android:textSize="36sp" />
+        android:textColor="#3F51B5"
+        android:textSize="36sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,11 +46,11 @@
 
 
         android:layout_height="wrap_content"
-        android:fontFamily="cursive"
+        android:fontFamily="@font/annie_use_your_telescope"
         android:text="@string/welcome"
         android:textColor="#3F51B5"
         android:textSize="36sp"
-        android:textStyle="bold|italic" />
+        android:textStyle="bold" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -75,11 +76,12 @@
                     android:layout_marginBottom="5dp"
                     android:background="#00BCD4"
                     android:drawableRight="@drawable/groceries_icon"
+                    android:fontFamily="@font/open_sans_bold"
                     android:gravity="center"
                     android:shadowColor="#FFFFFF"
                     android:text="My Necessities"
                     android:textColor="#FFF"
-                    android:textSize="30sp" />
+                    android:textSize="24sp" />
 
                 <Button
                     android:id="@+id/inventory_btn"
@@ -88,10 +90,11 @@
                     android:layout_marginBottom="5dp"
                     android:background="#00BCD4"
                     android:drawableRight="@drawable/snacks_icon"
+                    android:fontFamily="@font/open_sans_bold"
                     android:gravity="center"
                     android:text="My Inventory"
                     android:textColor="#FFF"
-                    android:textSize="30sp" />
+                    android:textSize="24sp" />
 
                 <Button
                     android:id="@+id/shopping_list_button"
@@ -100,10 +103,11 @@
                     android:layout_marginBottom="5dp"
                     android:background="#00BCD4"
                     android:drawableRight="@drawable/shopping_icon"
+                    android:fontFamily="@font/open_sans_bold"
                     android:gravity="center"
                     android:text="My Shopping List"
                     android:textColor="#FFF"
-                    android:textSize="30sp" />
+                    android:textSize="24sp" />
 
                 <Button
                     android:id="@+id/expiry_btn"
@@ -112,10 +116,11 @@
                     android:layout_marginBottom="5dp"
                     android:background="#00BCD4"
                     android:drawableRight="@drawable/expiry_icon"
+                    android:fontFamily="@font/open_sans_bold"
                     android:gravity="center"
                     android:text="Expiry Tracker"
                     android:textColor="#FFF"
-                    android:textSize="30sp" />
+                    android:textSize="24sp" />
 
 
             </LinearLayout>

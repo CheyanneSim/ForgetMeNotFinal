@@ -5,17 +5,20 @@
 
     <TextView
         android:id="@+id/item_tv"
-        android:layout_width="100dp"
+        android:layout_width="65dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:fontFamily="@font/open_sans"
         android:paddingLeft="16dp"
-        android:textAlignment="textStart" />
+        android:textAlignment="textStart"
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/expiry_tv"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:fontFamily="@font/open_sans"
         android:inputType="date"
         android:textAlignment="center"
         android:textColor="#000000" />
@@ -25,6 +28,7 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:fontFamily="@font/open_sans"
         android:textAlignment="center"
         android:textColor="#000000" />
 </LinearLayout>
