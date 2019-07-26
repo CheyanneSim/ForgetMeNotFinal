@@ -1,9 +1,13 @@
 package com.example.forgetMeNot.shoppingList;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,30 +17,39 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.forgetMeNot.Inventory.MyInventory;
 import com.example.forgetMeNot.R;
-import com.example.forgetMeNot.Authentication.UserDetails;
 import com.example.forgetMeNot.SharingData.GroupFragment;
-import com.example.forgetMeNot.necessities.Necessity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-// TODO Firebase path wrong, should be Groups, GroupID, Necessities...
-// Edit MyNecessities & My shopping list file!
+import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
+import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
 public class MyShoppingList extends AppCompatActivity implements AddToShoppingList.DialogListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference collectionRef = db.collection("Necessities");
+    private CollectionReference necessitiesCollectionRef;
+    private CollectionReference extraShoppingListCollection;
+    private CollectionReference nonEssentialsCollectionRef;
+    public String group;
+    public ArrayAdapter<String> adapter;
     ArrayList<String> items = new ArrayList<>();
     ArrayList<String> selectedItems = new ArrayList<>();
     ListView shoppingList;
+
+    public MyShoppingList(){}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +66,42 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
         shoppingList = (ListView) findViewById(R.id.shopping_list);
         shoppingList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-        // Adding items from firebase that are "Not Available" into shoppingList
-        collectionRef.get()
+        // Load group from GroupFragment
+        loadGroup();
+
+        necessitiesCollectionRef = db.collection("Groups").document(group).collection("Necessities");
+        nonEssentialsCollectionRef = db.collection("Groups").document(group).collection("Non-essentials");
+        extraShoppingListCollection = db.collection("Groups").document(group).collection("Shopping List");
+
+        // retrieve extra shopping list that user added from Firebase
+        extraShoppingListCollection.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                boolean isAvailable = (boolean) doc.getData().get(Necessity.availabilityKey);
+                                String item = doc.getString("Item");
+                                items.add(item);
+                            }
+                            adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
+                            shoppingList.setAdapter(adapter);
+                        }
+                    }
+                });
+
+        // Adding necessities that has ran out
+        necessitiesCollectionRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                boolean isAvailable = doc.getBoolean("Availability");
                                 if (!isAvailable) {
-                                    String item = (String) doc.getData().get(Necessity.itemKey);
-                                    items.add(item);
+                                    String item = doc.getString("Necessity");
+                                    if (!items.contains(item)) {
+                                        items.add(item);
+                                    }
                                 }
                             }
                             ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
@@ -86,11 +124,65 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
         });
     }
 
+    //Retrieve group name from GroupFragment using shared preferences
+    public void loadGroup() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        group = sharedPreferences.getString(GROUP, "");
+    }
+
     public void removePurchased(View view) {
-        // TODO add selected items to inventory list
-        for (String item : selectedItems) {
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (int i = 0; i < selectedItems.size(); i++) {
+            final String item = selectedItems.get(i);
             items.remove(item);
-            collectionRef.document(item).update("Availability", true);
+            necessitiesCollectionRef.document(item).update("Availability", true);
+            necessitiesCollectionRef.document(item).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        if (documentSnapshot.contains("Expiry Date")) {
+                            documentSnapshot.getReference().update("Expiry Date", null);
+                        }
+                    } else {
+                        extraShoppingListCollection.document(item).get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        if (documentSnapshot.exists()) {
+                                            String name = documentSnapshot.getString("Item");
+                                            boolean food = documentSnapshot.getBoolean("Is Food");
+                                            if (food) {
+                                                // Add to Firestore under Non-essentials
+                                                Map<String, Object> data = new HashMap<>();
+                                                data.put("Availability", true);
+                                                data.put("Expiry Date", null);
+                                                data.put("Food", name);
+                                                nonEssentialsCollectionRef.document(name).set(data);
+                                                Log.d("My tag", "added to inventory");
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                    // If it is non-essential food item, add it to My Inventory, then delete from Shopping List
+                    extraShoppingListCollection.document(item).get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    if (documentSnapshot.exists()) {
+                                        String name = documentSnapshot.getString("Item");
+                                        extraShoppingListCollection.document(name).delete();
+                                    }
+                        }
+                    });
+
+                }
+            });
+
+            // To off the purchase switch in inventory
+            editor.putBoolean(item, false);
+            editor.apply();
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
         shoppingList.setAdapter(adapter);
@@ -117,11 +209,22 @@ public class MyShoppingList extends AppCompatActivity implements AddToShoppingLi
     }
 
     @Override
-    public void addItem(String item) {
-        items.add(item);
+    public void addItem(String item, boolean isFood) {
+        if (!items.contains(item)) {
+            // Add to firestore
+            Map<String, Object> data = new HashMap<>();
+            data.put("Item", item);
+            data.put("Is Food", isFood);
+            extraShoppingListCollection.document(item).set(data);
+            // add to list
+            items.add(item);
+        } else {
+            Toast.makeText(getApplicationContext(), "Item is already in your shopping list!", Toast.LENGTH_LONG).show();
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyShoppingList.this, R.layout.shoppinglist_row_layout, R.id.checked_txt, items);
         shoppingList.setAdapter(adapter);
     }
+
 
     // Set back button to finish activity
     @Override

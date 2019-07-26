@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="right|top"
+    android:clickable="true"
+    android:padding="56dp">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Input your non-essential food item below:"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/non_essential_item_editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="Food"
+        android:inputType="textCapWords"
+        android:textAlignment="center"
+        android:textSize="12sp" />
+
+    <ImageButton
+        android:id="@+id/scan_food"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_toRightOf="@id/non_essential_item_editText"
+        android:background="#BDE4E9"
+        app:srcCompat="@drawable/ic_menu_camera" />
+
+    <Button
+        android:id="@+id/choose_expiry_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/non_essential_item_editText"
+        android:layout_centerHorizontal="true"
+        android:background="#BDE4E9"
+        android:text="Choose Expiry Date"
+        android:textAlignment="center"
+        android:textColor="@color/Black"
+        android:textSize="14sp" />
+
+</RelativeLayout>

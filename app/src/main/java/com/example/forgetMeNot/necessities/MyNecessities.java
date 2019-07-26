@@ -1,44 +1,43 @@
 package com.example.forgetMeNot.necessities;
 
-import android.nfc.Tag;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.example.forgetMeNot.Notification.Alarm;
 import com.example.forgetMeNot.R;
-import com.example.forgetMeNot.Authentication.UserDetails;
-import com.example.forgetMeNot.SharingData.GroupFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
+
+import static com.example.forgetMeNot.SharingData.GroupFragment.GROUP;
+import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
 
 public class MyNecessities extends AppCompatActivity implements AddToNecessities.DialogListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference collectionRef = db.collection("Necessities");
+    private CollectionReference necessitiesCollectionRef;
     public String group;
+    public NecessitiesAdapter adapter;
 
-    ArrayList<Map<String,String>> necessities = new ArrayList<>();
-    ListView show;
+    ArrayList<Necessity> necessities = new ArrayList<>();
+    SwipeMenuListView listView;
 
     // To keep track of what the user has already keyed in
     ArrayList<String> inList = new ArrayList<>();
@@ -54,36 +53,89 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("My Necessities");
 
+        // Load group from GroupFragment
+        loadGroup();
+        necessitiesCollectionRef = db.collection("Groups").document(group).collection("Necessities");
+
         // Creating list of necessities
-        show = (ListView) findViewById(R.id.necessity_list);
+        listView = (SwipeMenuListView) findViewById(R.id.necessity_list);
         retrieveData();
+
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                // set item width
+                deleteItem.setWidth(170);
+                // set a icon
+                deleteItem.setIcon(R.drawable.ic_delete);
+                // add to menu
+                menu.addMenuItem(deleteItem);
+            }
+        };
+
+        // set creator
+        listView.setMenuCreator(creator);
+
+        listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                delete(position);
+                // false : close the menu; true : not close the menu
+                return false;
+            }
+        });
+    }
+
+    private void delete(int position) {
+        String item = necessities.get(position).getName();
+        necessities.remove(position);
+        inList.remove(item.trim().toLowerCase());
+        necessitiesCollectionRef.document(item).delete();
+        adapter = new NecessitiesAdapter(MyNecessities.this, R.layout.necessities_rowlayout, necessities);
+        listView.setAdapter(adapter);
+        // Cancel alarms
+        Alarm.cancelAlarm(getApplicationContext(), item.hashCode());
+        Alarm.cancelAlarm(getApplicationContext(), item.hashCode() * 2);
+
+        Toast.makeText(getApplicationContext(), item + " deleted from your necessities", Toast.LENGTH_LONG).show();
+    }
+
+
+    //Retrieve group name from GroupFragment using shared preferences
+    public void loadGroup() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        group = sharedPreferences.getString(GROUP, "");
     }
 
     // To retrieve data from firebase
     public void retrieveData() {
-        collectionRef.get()
+        necessitiesCollectionRef.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                Map<String, String> data = new HashMap<>();
-                                String item = (String) doc.getData().get(Necessity.itemKey);
-                                boolean isAvailable = (boolean) doc.getData().get(Necessity.availabilityKey);
-                                data.put("Necessity", item);
-                                if (isAvailable) {
-                                    data.put("Availability", "Available");
+                                String item = doc.getString(Necessity.itemKey);
+                                boolean isAvailable = doc.getBoolean(Necessity.availabilityKey);
+                                Necessity necessity;
+                                if (doc.contains(Necessity.expiryKey)) {
+                                    Date expiry = doc.getDate(Necessity.expiryKey);
+                                    necessity = new NecessityFood(item, expiry, isAvailable);
                                 } else {
-                                    data.put("Availability", "Not Available");
+                                    necessity = new NecessityNonFood(item, isAvailable);
                                 }
-                                necessities.add(data);
+                                necessities.add(necessity);
+                                inList.add(item.trim().toLowerCase());
+                                adapter = new NecessitiesAdapter(MyNecessities.this, R.layout.necessities_rowlayout, necessities);
+                                listView.setAdapter(adapter);
                             }
-                            SimpleAdapter adapter = new SimpleAdapter(MyNecessities.this, necessities,
-                                    android.R.layout.simple_list_item_2,
-                                    new String[] {"Necessity", "Availability"},
-                                    new int[] {android.R.id.text1,
-                                            android.R.id.text2});
-                            show.setAdapter(adapter);
                         }
                     }
                 });
@@ -118,7 +170,7 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
     }
 
     @Override
-    public void addItem(String item, boolean isFood, boolean isAvailable) {
+    public void addItem(String item, Date expiry, boolean isFood, boolean isAvailable) {
         if (inList.contains(item.trim().toLowerCase())) {
             Toast.makeText(getBaseContext(), "Item is already in your list", Toast.LENGTH_LONG).show();
         } else if (item == null || item.trim().equals("")) {
@@ -127,30 +179,25 @@ public class MyNecessities extends AppCompatActivity implements AddToNecessities
             //Adding to Firebase
             Necessity necessity;
             if (isFood) {
-                necessity = new NecessityFood(item, isAvailable);
+                necessity = new NecessityFood(item, expiry, isAvailable);
             } else {
                 necessity = new NecessityNonFood(item, isAvailable);
             }
-            necessity.createEntry(collectionRef);
+            necessity.createEntry(necessitiesCollectionRef);
 
             // To check whether item is already in necessities list
             inList.add(item.toLowerCase());
 
             // For List view
-            Map<String, String> data = new HashMap<>();
-            data.put("Necessity", item);
-            if (isAvailable) {
-                data.put("Availability", "Available");
-            } else {
-                data.put("Availability", "Not Available");
+            necessities.add(necessity);
+            adapter = new NecessitiesAdapter(MyNecessities.this, R.layout.necessities_rowlayout, necessities);
+            listView.setAdapter(adapter);
+
+            // Set 2 alarms - one 5 days before, one on the day itself
+            if (expiry != null) {
+                Alarm.setFirstAlarm(getApplicationContext(), expiry, item, true, item.hashCode());
+                Alarm.setSecondAlarm(getApplicationContext(), expiry, item, true, item.hashCode());
             }
-            necessities.add(data);
-            SimpleAdapter adapter = new SimpleAdapter(MyNecessities.this, necessities,
-                    android.R.layout.simple_list_item_2,
-                    new String[]{"Necessity", "Availability"},
-                    new int[]{android.R.id.text1,
-                            android.R.id.text2});
-            show.setAdapter(adapter);
         }
     }
 }

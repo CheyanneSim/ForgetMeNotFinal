@@ -6,6 +6,19 @@
     android:orientation="vertical">
 
 
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FAFDFD"
+        android:fontFamily="@font/annie_use_your_telescope"
+        android:gravity="center"
+        android:text="Forget Me Not"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#3F51B5"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,21 +27,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Orbital 2019"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="School of Computing"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </LinearLayout>
+            android:orientation="vertical"/>
 
         <View
             android:layout_width="0dp"
@@ -38,34 +37,20 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Summer Break"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="13/5/2019"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </LinearLayout>
+            android:orientation="vertical"/>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1pt"
-        android:layout_margin="8pt"
-        android:background="#a7a9ef"></View>
 
     <TextView
         android:id="@+id/userEmail"
         android:layout_width="wrap_content"
+
+
         android:layout_height="wrap_content"
-        android:text="Welcome" />
+        android:fontFamily="@font/annie_use_your_telescope"
+        android:text="@string/welcome"
+        android:textColor="#3F51B5"
+        android:textSize="36sp"
+        android:textStyle="bold" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -85,26 +70,57 @@
                 android:layout_gravity="center">
 
                 <Button
+                    android:id="@+id/necessities_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="#00BCD4"
+                    android:drawableRight="@drawable/groceries_icon"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:gravity="center"
+                    android:shadowColor="#FFFFFF"
+                    android:text="My Necessities"
+                    android:textColor="#FFF"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/inventory_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="#00BCD4"
+                    android:drawableRight="@drawable/snacks_icon"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:gravity="center"
+                    android:text="My Inventory"
+                    android:textColor="#FFF"
+                    android:textSize="24sp" />
+
+                <Button
                     android:id="@+id/shopping_list_button"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_marginBottom="5dp"
-                    android:background="#008B8B"
+                    android:background="#00BCD4"
+                    android:drawableRight="@drawable/shopping_icon"
+                    android:fontFamily="@font/open_sans_bold"
                     android:gravity="center"
                     android:text="My Shopping List"
                     android:textColor="#FFF"
-                    android:textSize="30sp" />
+                    android:textSize="24sp" />
 
                 <Button
-                android:id="@+id/necessities_button"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_marginBottom="15dp"
-                android:background="#008B8B"
-                android:gravity="center"
-                android:text="My Necessities"
-                android:textColor="#FFF"
-                android:textSize="30sp" />
+                    android:id="@+id/expiry_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="#00BCD4"
+                    android:drawableRight="@drawable/expiry_icon"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:gravity="center"
+                    android:text="Expiry Tracker"
+                    android:textColor="#FFF"
+                    android:textSize="24sp" />
 
 
             </LinearLayout>

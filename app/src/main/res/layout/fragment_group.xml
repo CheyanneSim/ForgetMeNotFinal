@@ -1,76 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/gradient_background">
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Current Group: "
-        android:textAlignment="viewStart"
-        android:textColor="#000000"
-        android:textSize="30sp" />
-
-    <TextView
-        android:id="@+id/group_name_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#000000"
-        android:textSize="40sp" />
-
-    <TextView
-        android:id="@+id/have_group_textView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Have a group? Key in your group name below!"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textStyle="bold" />
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/existing_group_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Group Name"
-        android:inputType="textPersonName"
-        android:textAlignment="center" />
+        <TextView
+            android:id="@+id/nogroup_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/join_grp_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Join Group" />
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/open_sans_light"
+            android:text="Current Group: "
+            android:textAlignment="viewStart"
+            android:textColor="#000000"
+            android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/no_group_textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No Group? Choose a group name!"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/group_name_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/annie_use_your_telescope"
+            android:paddingBottom="16dp"
+            android:textColor="#000000"
+            android:textSize="36sp"
+            android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/new_group_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Group Name"
-        android:inputType="textPersonName"
-        android:textAlignment="center" />
+        <TextView
+            android:id="@+id/have_group_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_semibold"
+            android:text="Have a group? Key in your group name below!"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
-    <Button
-        android:id="@+id/create_grp_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Create Group" />
-</LinearLayout>
+        <EditText
+            android:id="@+id/existing_group_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Group Name"
+            android:imeOptions="actionNext"
+            android:inputType="textPersonName"
+            android:textAlignment="viewStart" />
+
+        <EditText
+            android:id="@+id/existingpw_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Password"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/join_grp_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#BDE4E9"
+            android:drawableEnd="@drawable/join_group"
+            android:text="Join Group" />
+
+        <TextView
+            android:id="@+id/no_group_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_semibold"
+            android:text="No Group? Create one!"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/new_group_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Group Name"
+            android:imeOptions="actionNext"
+            android:inputType="textPersonName"
+            android:textAlignment="viewStart" />
+
+        <EditText
+            android:id="@+id/newpw_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Create Password"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:textAlignment="viewStart" />
+
+        <Button
+            android:id="@+id/create_grp_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#BDE4E9"
+            android:drawableEnd="@drawable/create_group"
+            android:text="Create Group" />
+
+    </LinearLayout>
+</ScrollView>

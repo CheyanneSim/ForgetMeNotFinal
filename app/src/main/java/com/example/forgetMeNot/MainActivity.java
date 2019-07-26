@@ -1,5 +1,7 @@
 package com.example.forgetMeNot;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,21 +12,27 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.forgetMeNot.Authentication.LoginFragment;
+import com.example.forgetMeNot.Authentication.LoginRegisterFragment;
 import com.example.forgetMeNot.Authentication.RegisterFragment;
 import com.example.forgetMeNot.SharingData.GroupFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import static com.example.forgetMeNot.SharingData.GroupFragment.SHARED_PREFS;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    static TextView name, email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +40,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         // Handle drawer.
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -43,10 +50,20 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        // Display user's name and email in navigation view
+        View navHeader = navigationView.getHeaderView(0);
+        name = (TextView) navHeader.findViewById(R.id.name_textView);
+        email = (TextView) navHeader.findViewById(R.id.email_textView);
+        setNameAndEmail(mAuth);
 
         // choose which screen u want to show first.
-        displaySelectedScreen(R.id.nav_home);
+        if (mAuth.getCurrentUser() != null) {
+            displaySelectedScreen(R.id.nav_home);
+        } else {
+            FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, new LoginRegisterFragment());
+            ft.commit();
+        }
 
 
         //Firestore Setup
@@ -101,22 +118,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
     //displaying the selected screen
     private void displaySelectedScreen(int id) {
 
@@ -125,18 +126,17 @@ public class MainActivity extends AppCompatActivity
 
 
         if (id == R.id.nav_home) {
-
             fragment = new HomeFragment();
         } else if (id == R.id.nav_register) {
             fragment = new RegisterFragment();
-
         } else if (id == R.id.nav_login) {
             fragment = new LoginFragment();
-
         } else if (id == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
+            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+            sharedPreferences.edit().clear().apply();
+            name.setText("Welcome");
             fragment = new LoginFragment();
-
         } else if (id == R.id.nav_group) {
             fragment = new GroupFragment();
         }
@@ -149,8 +149,19 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public static void setNameAndEmail(FirebaseAuth mAuth) {
+        if (mAuth.getCurrentUser() != null) {
+            name.setText(mAuth.getCurrentUser().getDisplayName());
+            email.setText(mAuth.getCurrentUser().getEmail());
+        }
+    }
 
-        @SuppressWarnings("StatementWithEmptyBody")
+    // Used after registration only
+    public static void setNameAndEmail(String inputname, String inputemail) {
+        name.setText(inputname);
+        email.setText(inputemail);
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
